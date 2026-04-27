@@ -30,7 +30,7 @@ jobs:
     - name: Install dependencies
       run: npm ci
     - name: Install .NET HTTPS Development Certificate
-      # if: matrix.os == 'ubuntu-latest'
+      if: runner.os != 'Linux'
       run: |
         dotnet dev-certs https --clean
         dotnet dev-certs https --trust
