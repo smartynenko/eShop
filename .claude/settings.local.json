@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(\"/c/Program Files \\(x86\\)/Microsoft Visual Studio/Installer/vswhere.exe\" -all -format json)",
+      "Bash(python3 -c \"import json,sys; data=json.load\\(sys.stdin\\); [print\\(d.get\\('installationPath',''\\)\\) for d in data]\")",
+      "Bash(\"/c/Program Files \\(x86\\)/Microsoft Visual Studio/Installer/vswhere.exe\" -all -products \"*\" -requires \"*\" -format json -property packages)",
+      "Bash(grep -r \"catch\\\\s*$\\\\|catch\\\\s*\\\\\\(.*\\\\\\)\" /c/projects/eShop/src/Ordering.API --include=\"*.cs\" -A 2)",
+      "Bash(xargs grep *)",
+      "Bash(grep -E \"\\\\.\\(slnf|slnx|ps1|sh\\)$\")",
+      "Bash(xargs wc *)",
+      "Bash(dotnet restore *)"
+    ]
+  }
+}
