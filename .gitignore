@@ -65,6 +65,13 @@ project.lock.json
 project.fragment.lock.json
 artifacts/
 
+# Auto-generated OpenAPI documents (Microsoft.Extensions.ApiDescription.Server)
+src/**/*.API.json
+src/**/*.API_v*.json
+
+# Claude Code local settings
+.claude/settings.local.json
+
 # Tye
 .tye/
 
