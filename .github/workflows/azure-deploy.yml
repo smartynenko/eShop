@@ -46,7 +46,7 @@ jobs:
         id: outputs
         run: |
           OUTPUT=$(az deployment sub create \
-            --name eshop-infra \
+            --name eshop-infra-${{ github.run_number }} \
             --location ${{ env.LOCATION }} \
             --template-file infra/main.bicep \
             --parameters \
@@ -170,7 +170,7 @@ jobs:
           EOF
 
           az deployment group create \
-            --name eshop-apps \
+            --name eshop-apps-${{ github.run_number }} \
             --resource-group ${{ needs.deploy-infrastructure.outputs.resource-group }} \
             --template-file infra/apps.bicep \
             --parameters @/tmp/apps-params.json
