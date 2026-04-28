@@ -4,7 +4,7 @@ targetScope = 'subscription'
 param location string = 'centralus'
 
 @description('Name of the resource group to create')
-param resourceGroupName string = 'rg-eshop'
+param resourceGroupName string = 'rg-eshop-central'
 
 @description('PostgreSQL administrator password')
 @secure()

@@ -16,7 +16,7 @@ on:
       - '.github/workflows/markdownlint.yml'
 
 env:
-  RESOURCE_GROUP: rg-eshop
+  RESOURCE_GROUP: rg-eshop-central
   LOCATION: centralus
 
 jobs:
