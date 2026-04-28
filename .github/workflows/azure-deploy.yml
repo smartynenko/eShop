@@ -1,0 +1,154 @@
+name: Deploy to Azure
+
+# Required GitHub Secrets:
+#   AZURE_CREDENTIALS        - JSON: {"clientId":"...","clientSecret":"...","subscriptionId":"...","tenantId":"..."}
+#   AZURE_SUBSCRIPTION_ID    - Azure subscription ID
+#   POSTGRES_ADMIN_PASSWORD  - Strong password for PostgreSQL admin (min 8 chars, upper+lower+digit+symbol)
+#   RABBITMQ_PASSWORD        - Password for the RabbitMQ eshop user
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - '.github/workflows/pr-validation*.yml'
+      - '.github/workflows/playwright.yml'
+      - '.github/workflows/markdownlint.yml'
+
+env:
+  RESOURCE_GROUP: rg-eshop
+  LOCATION: eastus
+
+jobs:
+  # ── 1. Deploy infrastructure (ACR, PostgreSQL, Redis, Container Apps Env) ──
+  deploy-infrastructure:
+    name: Deploy Infrastructure
+    runs-on: ubuntu-latest
+    outputs:
+      acr-login-server:              ${{ steps.outputs.outputs.acr-login-server }}
+      acr-name:                      ${{ steps.outputs.outputs.acr-name }}
+      resource-group:                ${{ steps.outputs.outputs.resource-group }}
+      container-apps-env-id:         ${{ steps.outputs.outputs.container-apps-env-id }}
+      container-apps-env-domain:     ${{ steps.outputs.outputs.container-apps-env-domain }}
+      postgres-server-name:          ${{ steps.outputs.outputs.postgres-server-name }}
+      postgres-admin-user:           ${{ steps.outputs.outputs.postgres-admin-user }}
+      redis-name:                    ${{ steps.outputs.outputs.redis-name }}
+      managed-identity-id:           ${{ steps.outputs.outputs.managed-identity-id }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy Bicep infrastructure
+        id: deploy
+        run: |
+          OUTPUT=$(az deployment sub create \
+            --name eshop-infra-${{ github.run_number }} \
+            --location ${{ env.LOCATION }} \
+            --template-file infra/main.bicep \
+            --parameters \
+              location=${{ env.LOCATION }} \
+              resourceGroupName=${{ env.RESOURCE_GROUP }} \
+              postgresAdminPassword='${{ secrets.POSTGRES_ADMIN_PASSWORD }}' \
+            --query properties.outputs \
+            --output json)
+          echo "deployment-output=$OUTPUT" >> $GITHUB_OUTPUT
+
+      - name: Extract outputs
+        id: outputs
+        run: |
+          OUTPUT='${{ steps.deploy.outputs.deployment-output }}'
+          echo "acr-login-server=$(echo $OUTPUT | jq -r '.acrLoginServer.value')"              >> $GITHUB_OUTPUT
+          echo "acr-name=$(echo $OUTPUT | jq -r '.acrName.value')"                            >> $GITHUB_OUTPUT
+          echo "resource-group=$(echo $OUTPUT | jq -r '.resourceGroupName.value')"            >> $GITHUB_OUTPUT
+          echo "container-apps-env-id=$(echo $OUTPUT | jq -r '.containerAppsEnvironmentId.value')"     >> $GITHUB_OUTPUT
+          echo "container-apps-env-domain=$(echo $OUTPUT | jq -r '.containerAppsEnvironmentDomain.value')" >> $GITHUB_OUTPUT
+          echo "postgres-server-name=$(echo $OUTPUT | jq -r '.postgresServerName.value')"     >> $GITHUB_OUTPUT
+          echo "postgres-admin-user=$(echo $OUTPUT | jq -r '.postgresAdminUser.value')"       >> $GITHUB_OUTPUT
+          echo "redis-name=$(echo $OUTPUT | jq -r '.redisName.value')"                        >> $GITHUB_OUTPUT
+          echo "managed-identity-id=$(echo $OUTPUT | jq -r '.managedIdentityId.value')"       >> $GITHUB_OUTPUT
+
+  # ── 2. Build and push container images in parallel ─────────────────────────
+  build-and-push:
+    name: Build ${{ matrix.service }}
+    needs: deploy-infrastructure
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - service: catalog-api
+            project: src/Catalog.API/Catalog.API.csproj
+          - service: basket-api
+            project: src/Basket.API/Basket.API.csproj
+          - service: ordering-api
+            project: src/Ordering.API/Ordering.API.csproj
+          - service: identity-api
+            project: src/Identity.API/Identity.API.csproj
+          - service: webapp
+            project: src/WebApp/WebApp.csproj
+          - service: webhooks-api
+            project: src/Webhooks.API/Webhooks.API.csproj
+          - service: order-processor
+            project: src/OrderProcessor/OrderProcessor.csproj
+          - service: payment-processor
+            project: src/PaymentProcessor/PaymentProcessor.csproj
+          - service: webhooksclient
+            project: src/WebhookClient/WebhookClient.csproj
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-dotnet@v5
+
+      - uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Login to ACR
+        run: az acr login --name ${{ needs.deploy-infrastructure.outputs.acr-name }}
+
+      - name: Build and push ${{ matrix.service }}
+        run: |
+          dotnet publish ${{ matrix.project }} \
+            --os linux --arch x64 \
+            /t:PublishContainer \
+            /p:ContainerRegistry=${{ needs.deploy-infrastructure.outputs.acr-login-server }} \
+            /p:ContainerRepository=${{ matrix.service }} \
+            /p:ContainerImageTag=${{ github.sha }}
+
+  # ── 3. Deploy Container Apps with the new image tag ────────────────────────
+  deploy-apps:
+    name: Deploy Container Apps
+    needs: [deploy-infrastructure, build-and-push]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy Container Apps
+        run: |
+          az deployment group create \
+            --name eshop-apps-${{ github.run_number }} \
+            --resource-group ${{ needs.deploy-infrastructure.outputs.resource-group }} \
+            --template-file infra/apps.bicep \
+            --parameters \
+              location=${{ env.LOCATION }} \
+              containerAppsEnvironmentId='${{ needs.deploy-infrastructure.outputs.container-apps-env-id }}' \
+              containerAppsEnvironmentDomain='${{ needs.deploy-infrastructure.outputs.container-apps-env-domain }}' \
+              acrLoginServer='${{ needs.deploy-infrastructure.outputs.acr-login-server }}' \
+              managedIdentityId='${{ needs.deploy-infrastructure.outputs.managed-identity-id }}' \
+              postgresServerName='${{ needs.deploy-infrastructure.outputs.postgres-server-name }}' \
+              postgresAdminUser='${{ needs.deploy-infrastructure.outputs.postgres-admin-user }}' \
+              postgresAdminPassword='${{ secrets.POSTGRES_ADMIN_PASSWORD }}' \
+              redisName='${{ needs.deploy-infrastructure.outputs.redis-name }}' \
+              rabbitmqPassword='${{ secrets.RABBITMQ_PASSWORD }}' \
+              imageTag=${{ github.sha }}
+
+      - name: Print app URLs
+        run: |
+          echo "WebApp:      https://webapp.${{ needs.deploy-infrastructure.outputs.container-apps-env-domain }}"
+          echo "Identity:    https://identity-api.${{ needs.deploy-infrastructure.outputs.container-apps-env-domain }}"
