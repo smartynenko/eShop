@@ -3,50 +3,39 @@ param containerAppsEnvironmentId string
 param containerAppsEnvironmentDomain string
 param acrLoginServer string
 param managedIdentityId string
-param postgresServerName string
-param postgresAdminUser string
-param redisName string
 param imageTag string
 
+// Connection strings computed in the workflow and passed as secure params
 @secure()
-param postgresAdminPassword string
+param catalogDbConn string
+
+@secure()
+param identityDbConn string
+
+@secure()
+param orderingDbConn string
+
+@secure()
+param webhooksDbConn string
+
+@secure()
+param redisConnString string
+
+@secure()
+param eventbusConn string
 
 @secure()
 param rabbitmqPassword string
 
-// ── Reference existing resources to derive secrets ─────────────────────────
+// ── Public URLs ─────────────────────────────────────────────────────────────
 
-resource postgresServer 'Microsoft.DBforPostgreSQL/flexibleServers@2023-12-01' existing = {
-  name: postgresServerName
-}
+var identityApiUrl   = 'https://identity-api.${containerAppsEnvironmentDomain}'
+var webAppUrl        = 'https://webapp.${containerAppsEnvironmentDomain}'
+var webhookClientUrl = 'https://webhooksclient.${containerAppsEnvironmentDomain}'
+var dotnetPort       = 8080
 
-resource redisCache 'Microsoft.Cache/redis@2023-08-01' existing = {
-  name: redisName
-}
-
-// ── Connection strings ──────────────────────────────────────────────────────
-
-var pgBase = 'Host=${postgresServer.properties.fullyQualifiedDomainName};Username=${postgresAdminUser};Password=${postgresAdminPassword};SSL Mode=Require;Trust Server Certificate=true'
-var catalogDbConn   = '${pgBase};Database=catalogdb'
-var identityDbConn  = '${pgBase};Database=identitydb'
-var orderingDbConn  = '${pgBase};Database=orderingdb'
-var webhooksDbConn  = '${pgBase};Database=webhooksdb'
-var redisConnString = '${redisCache.properties.hostName}:${redisCache.properties.sslPort},password=${redisCache.listKeys().primaryKey},ssl=True,abortConnect=False'
-var eventbusConn    = 'amqp://eshop:${rabbitmqPassword}@rabbitmq:5672'
-
-// ── Public URLs (derived from well-known app names + environment domain) ────
-
-var identityApiUrl    = 'https://identity-api.${containerAppsEnvironmentDomain}'
-var webAppUrl         = 'https://webapp.${containerAppsEnvironmentDomain}'
-var webhookClientUrl  = 'https://webhooksclient.${containerAppsEnvironmentDomain}'
-
-// ── Shared ingress helper values ────────────────────────────────────────────
-
-var dotnetPort = 8080
-
-// ── RabbitMQ ────────────────────────────────────────────────────────────────
-// Deployed as a Container App with TCP ingress so other apps can connect via AMQP.
-// Internal hostname: rabbitmq:5672
+// ── RabbitMQ ─────────────────────────────────────────────────────────────────
+// TCP ingress — other apps connect via amqp://eshop:{pass}@rabbitmq:5672
 
 resource rabbitmq 'Microsoft.App/containerApps@2024-03-01' = {
   name: 'rabbitmq'
@@ -106,11 +95,11 @@ resource identityApi 'Microsoft.App/containerApps@2024-03-01' = {
           env: [
             { name: 'ASPNETCORE_ENVIRONMENT', value: 'Production' }
             { name: 'ConnectionStrings__identitydb', secretRef: 'identity-db' }
-            { name: 'BasketApiClient',    value: 'http://basket-api' }
-            { name: 'OrderingApiClient',  value: 'http://ordering-api' }
-            { name: 'WebhooksApiClient',  value: 'http://webhooks-api' }
-            { name: 'WebhooksWebClient',  value: webhookClientUrl }
-            { name: 'WebAppClient',       value: webAppUrl }
+            { name: 'BasketApiClient',   value: 'http://basket-api' }
+            { name: 'OrderingApiClient', value: 'http://ordering-api' }
+            { name: 'WebhooksApiClient', value: 'http://webhooks-api' }
+            { name: 'WebhooksWebClient', value: webhookClientUrl }
+            { name: 'WebAppClient',      value: webAppUrl }
           ]
         }
       ]
@@ -136,8 +125,8 @@ resource catalogApi 'Microsoft.App/containerApps@2024-03-01' = {
       registries: [{ server: acrLoginServer, identity: managedIdentityId }]
       ingress: { external: false, targetPort: dotnetPort, transport: 'auto' }
       secrets: [
-        { name: 'catalog-db',  value: catalogDbConn }
-        { name: 'eventbus',    value: eventbusConn }
+        { name: 'catalog-db', value: catalogDbConn }
+        { name: 'eventbus',   value: eventbusConn }
       ]
     }
     template: {
@@ -147,9 +136,9 @@ resource catalogApi 'Microsoft.App/containerApps@2024-03-01' = {
           image: '${acrLoginServer}/catalog-api:${imageTag}'
           resources: { cpu: json('0.5'), memory: '1Gi' }
           env: [
-            { name: 'ASPNETCORE_ENVIRONMENT',          value: 'Production' }
-            { name: 'ConnectionStrings__catalogdb',    secretRef: 'catalog-db' }
-            { name: 'ConnectionStrings__eventbus',     secretRef: 'eventbus' }
+            { name: 'ASPNETCORE_ENVIRONMENT',       value: 'Production' }
+            { name: 'ConnectionStrings__catalogdb', secretRef: 'catalog-db' }
+            { name: 'ConnectionStrings__eventbus',  secretRef: 'eventbus' }
           ]
         }
       ]
@@ -159,7 +148,7 @@ resource catalogApi 'Microsoft.App/containerApps@2024-03-01' = {
   dependsOn: [rabbitmq]
 }
 
-// ── Basket API (gRPC) ─────────────────────────────────────────────────────────
+// ── Basket API (gRPC / HTTP2) ─────────────────────────────────────────────────
 
 resource basketApi 'Microsoft.App/containerApps@2024-03-01' = {
   name: 'basket-api'
@@ -173,7 +162,6 @@ resource basketApi 'Microsoft.App/containerApps@2024-03-01' = {
     configuration: {
       activeRevisionsMode: 'Single'
       registries: [{ server: acrLoginServer, identity: managedIdentityId }]
-      // http2 transport required for gRPC
       ingress: { external: false, targetPort: dotnetPort, transport: 'http2' }
       secrets: [
         { name: 'redis',    value: redisConnString }
@@ -187,10 +175,10 @@ resource basketApi 'Microsoft.App/containerApps@2024-03-01' = {
           image: '${acrLoginServer}/basket-api:${imageTag}'
           resources: { cpu: json('0.5'), memory: '1Gi' }
           env: [
-            { name: 'ASPNETCORE_ENVIRONMENT',       value: 'Production' }
-            { name: 'ConnectionStrings__redis',     secretRef: 'redis' }
-            { name: 'ConnectionStrings__eventbus',  secretRef: 'eventbus' }
-            { name: 'Identity__Url',                value: identityApiUrl }
+            { name: 'ASPNETCORE_ENVIRONMENT',      value: 'Production' }
+            { name: 'ConnectionStrings__redis',    secretRef: 'redis' }
+            { name: 'ConnectionStrings__eventbus', secretRef: 'eventbus' }
+            { name: 'Identity__Url',               value: identityApiUrl }
           ]
         }
       ]
@@ -227,10 +215,10 @@ resource orderingApi 'Microsoft.App/containerApps@2024-03-01' = {
           image: '${acrLoginServer}/ordering-api:${imageTag}'
           resources: { cpu: json('0.5'), memory: '1Gi' }
           env: [
-            { name: 'ASPNETCORE_ENVIRONMENT',         value: 'Production' }
-            { name: 'ConnectionStrings__orderingdb',  secretRef: 'ordering-db' }
-            { name: 'ConnectionStrings__eventbus',    secretRef: 'eventbus' }
-            { name: 'Identity__Url',                  value: identityApiUrl }
+            { name: 'ASPNETCORE_ENVIRONMENT',        value: 'Production' }
+            { name: 'ConnectionStrings__orderingdb', secretRef: 'ordering-db' }
+            { name: 'ConnectionStrings__eventbus',   secretRef: 'eventbus' }
+            { name: 'Identity__Url',                 value: identityApiUrl }
           ]
         }
       ]
@@ -240,7 +228,7 @@ resource orderingApi 'Microsoft.App/containerApps@2024-03-01' = {
   dependsOn: [rabbitmq, identityApi]
 }
 
-// ── Order Processor (background worker, no ingress) ───────────────────────────
+// ── Order Processor (background worker) ──────────────────────────────────────
 
 resource orderProcessor 'Microsoft.App/containerApps@2024-03-01' = {
   name: 'order-processor'
@@ -266,9 +254,9 @@ resource orderProcessor 'Microsoft.App/containerApps@2024-03-01' = {
           image: '${acrLoginServer}/order-processor:${imageTag}'
           resources: { cpu: json('0.25'), memory: '0.5Gi' }
           env: [
-            { name: 'ASPNETCORE_ENVIRONMENT',         value: 'Production' }
-            { name: 'ConnectionStrings__orderingdb',  secretRef: 'ordering-db' }
-            { name: 'ConnectionStrings__eventbus',    secretRef: 'eventbus' }
+            { name: 'ASPNETCORE_ENVIRONMENT',        value: 'Production' }
+            { name: 'ConnectionStrings__orderingdb', secretRef: 'ordering-db' }
+            { name: 'ConnectionStrings__eventbus',   secretRef: 'eventbus' }
           ]
         }
       ]
@@ -278,7 +266,7 @@ resource orderProcessor 'Microsoft.App/containerApps@2024-03-01' = {
   dependsOn: [rabbitmq, orderingApi]
 }
 
-// ── Payment Processor (background worker, no ingress) ─────────────────────────
+// ── Payment Processor (background worker) ────────────────────────────────────
 
 resource paymentProcessor 'Microsoft.App/containerApps@2024-03-01' = {
   name: 'payment-processor'
@@ -341,10 +329,10 @@ resource webhooksApi 'Microsoft.App/containerApps@2024-03-01' = {
           image: '${acrLoginServer}/webhooks-api:${imageTag}'
           resources: { cpu: json('0.25'), memory: '0.5Gi' }
           env: [
-            { name: 'ASPNETCORE_ENVIRONMENT',         value: 'Production' }
-            { name: 'ConnectionStrings__webhooksdb',  secretRef: 'webhooks-db' }
-            { name: 'ConnectionStrings__eventbus',    secretRef: 'eventbus' }
-            { name: 'Identity__Url',                  value: identityApiUrl }
+            { name: 'ASPNETCORE_ENVIRONMENT',        value: 'Production' }
+            { name: 'ConnectionStrings__webhooksdb', secretRef: 'webhooks-db' }
+            { name: 'ConnectionStrings__eventbus',   secretRef: 'eventbus' }
+            { name: 'Identity__Url',                 value: identityApiUrl }
           ]
         }
       ]
@@ -377,10 +365,10 @@ resource webhookClient 'Microsoft.App/containerApps@2024-03-01' = {
           image: '${acrLoginServer}/webhooksclient:${imageTag}'
           resources: { cpu: json('0.25'), memory: '0.5Gi' }
           env: [
-            { name: 'ASPNETCORE_ENVIRONMENT',                value: 'Production' }
-            { name: 'IdentityUrl',                           value: identityApiUrl }
-            { name: 'CallBackUrl',                           value: webhookClientUrl }
-            { name: 'services__webhooks-api__http__0',       value: 'http://webhooks-api' }
+            { name: 'ASPNETCORE_ENVIRONMENT',          value: 'Production' }
+            { name: 'IdentityUrl',                     value: identityApiUrl }
+            { name: 'CallBackUrl',                     value: webhookClientUrl }
+            { name: 'services__webhooks-api__http__0', value: 'http://webhooks-api' }
           ]
         }
       ]
@@ -416,13 +404,13 @@ resource webApp 'Microsoft.App/containerApps@2024-03-01' = {
           image: '${acrLoginServer}/webapp:${imageTag}'
           resources: { cpu: json('0.5'), memory: '1Gi' }
           env: [
-            { name: 'ASPNETCORE_ENVIRONMENT',              value: 'Production' }
-            { name: 'ConnectionStrings__eventbus',         secretRef: 'eventbus' }
-            { name: 'IdentityUrl',                         value: identityApiUrl }
-            { name: 'CallBackUrl',                         value: webAppUrl }
-            { name: 'services__basket-api__http__0',       value: 'http://basket-api' }
-            { name: 'services__catalog-api__http__0',      value: 'http://catalog-api' }
-            { name: 'services__ordering-api__http__0',     value: 'http://ordering-api' }
+            { name: 'ASPNETCORE_ENVIRONMENT',          value: 'Production' }
+            { name: 'ConnectionStrings__eventbus',     secretRef: 'eventbus' }
+            { name: 'IdentityUrl',                     value: identityApiUrl }
+            { name: 'CallBackUrl',                     value: webAppUrl }
+            { name: 'services__basket-api__http__0',   value: 'http://basket-api' }
+            { name: 'services__catalog-api__http__0',  value: 'http://catalog-api' }
+            { name: 'services__ordering-api__http__0', value: 'http://ordering-api' }
           ]
         }
       ]

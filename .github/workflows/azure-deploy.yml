@@ -32,6 +32,7 @@ jobs:
       container-apps-env-domain:     ${{ steps.outputs.outputs.container-apps-env-domain }}
       postgres-server-name:          ${{ steps.outputs.outputs.postgres-server-name }}
       postgres-admin-user:           ${{ steps.outputs.outputs.postgres-admin-user }}
+      postgres-host:                 ${{ steps.outputs.outputs.postgres-host }}
       redis-name:                    ${{ steps.outputs.outputs.redis-name }}
       managed-identity-id:           ${{ steps.outputs.outputs.managed-identity-id }}
     steps:
@@ -67,6 +68,7 @@ jobs:
           echo "container-apps-env-domain=$(echo $OUTPUT | jq -r '.containerAppsEnvironmentDomain.value')" >> $GITHUB_OUTPUT
           echo "postgres-server-name=$(echo $OUTPUT | jq -r '.postgresServerName.value')"     >> $GITHUB_OUTPUT
           echo "postgres-admin-user=$(echo $OUTPUT | jq -r '.postgresAdminUser.value')"       >> $GITHUB_OUTPUT
+          echo "postgres-host=$(echo $OUTPUT | jq -r '.postgresHost.value')"                 >> $GITHUB_OUTPUT
           echo "redis-name=$(echo $OUTPUT | jq -r '.redisName.value')"                        >> $GITHUB_OUTPUT
           echo "managed-identity-id=$(echo $OUTPUT | jq -r '.managedIdentityId.value')"       >> $GITHUB_OUTPUT
 
@@ -129,24 +131,54 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Build connection strings
+        id: connstrings
+        run: |
+          RG="${{ needs.deploy-infrastructure.outputs.resource-group }}"
+          PG_HOST="${{ needs.deploy-infrastructure.outputs.postgres-host }}"
+          PG_USER="${{ needs.deploy-infrastructure.outputs.postgres-admin-user }}"
+          PG_PASS="${{ secrets.POSTGRES_ADMIN_PASSWORD }}"
+          REDIS_NAME="${{ needs.deploy-infrastructure.outputs.redis-name }}"
+
+          REDIS_HOST=$(az redis show --name "$REDIS_NAME" --resource-group "$RG" --query "properties.hostName" -o tsv)
+          REDIS_PORT=$(az redis show --name "$REDIS_NAME" --resource-group "$RG" --query "properties.sslPort" -o tsv)
+          REDIS_KEY=$(az redis list-keys --name "$REDIS_NAME" --resource-group "$RG" --query "primaryKey" -o tsv)
+
+          PG_BASE="Host=${PG_HOST};Username=${PG_USER};Password=${PG_PASS};SSL Mode=Require;Trust Server Certificate=true"
+
+          echo "catalog-db=${PG_BASE};Database=catalogdb"   >> $GITHUB_OUTPUT
+          echo "identity-db=${PG_BASE};Database=identitydb" >> $GITHUB_OUTPUT
+          echo "ordering-db=${PG_BASE};Database=orderingdb" >> $GITHUB_OUTPUT
+          echo "webhooks-db=${PG_BASE};Database=webhooksdb" >> $GITHUB_OUTPUT
+          echo "redis=${REDIS_HOST}:${REDIS_PORT},password=${REDIS_KEY},ssl=True,abortConnect=False" >> $GITHUB_OUTPUT
+          echo "eventbus=amqp://eshop:${{ secrets.RABBITMQ_PASSWORD }}@rabbitmq:5672" >> $GITHUB_OUTPUT
+
       - name: Deploy Container Apps
         run: |
+          # Write params to a temp file to avoid shell quoting issues with connection strings
+          cat > /tmp/apps-params.json << EOF
+          {
+            "location":                      { "value": "${{ env.LOCATION }}" },
+            "containerAppsEnvironmentId":    { "value": "${{ needs.deploy-infrastructure.outputs.container-apps-env-id }}" },
+            "containerAppsEnvironmentDomain":{ "value": "${{ needs.deploy-infrastructure.outputs.container-apps-env-domain }}" },
+            "acrLoginServer":                { "value": "${{ needs.deploy-infrastructure.outputs.acr-login-server }}" },
+            "managedIdentityId":             { "value": "${{ needs.deploy-infrastructure.outputs.managed-identity-id }}" },
+            "imageTag":                      { "value": "${{ github.sha }}" },
+            "rabbitmqPassword":              { "value": "${{ secrets.RABBITMQ_PASSWORD }}" },
+            "catalogDbConn":                 { "value": "${{ steps.connstrings.outputs.catalog-db }}" },
+            "identityDbConn":                { "value": "${{ steps.connstrings.outputs.identity-db }}" },
+            "orderingDbConn":                { "value": "${{ steps.connstrings.outputs.ordering-db }}" },
+            "webhooksDbConn":                { "value": "${{ steps.connstrings.outputs.webhooks-db }}" },
+            "redisConnString":               { "value": "${{ steps.connstrings.outputs.redis }}" },
+            "eventbusConn":                  { "value": "${{ steps.connstrings.outputs.eventbus }}" }
+          }
+          EOF
+
           az deployment group create \
             --name eshop-apps-${{ github.run_number }} \
             --resource-group ${{ needs.deploy-infrastructure.outputs.resource-group }} \
             --template-file infra/apps.bicep \
-            --parameters \
-              location=${{ env.LOCATION }} \
-              containerAppsEnvironmentId='${{ needs.deploy-infrastructure.outputs.container-apps-env-id }}' \
-              containerAppsEnvironmentDomain='${{ needs.deploy-infrastructure.outputs.container-apps-env-domain }}' \
-              acrLoginServer='${{ needs.deploy-infrastructure.outputs.acr-login-server }}' \
-              managedIdentityId='${{ needs.deploy-infrastructure.outputs.managed-identity-id }}' \
-              postgresServerName='${{ needs.deploy-infrastructure.outputs.postgres-server-name }}' \
-              postgresAdminUser='${{ needs.deploy-infrastructure.outputs.postgres-admin-user }}' \
-              postgresAdminPassword='${{ secrets.POSTGRES_ADMIN_PASSWORD }}' \
-              redisName='${{ needs.deploy-infrastructure.outputs.redis-name }}' \
-              rabbitmqPassword='${{ secrets.RABBITMQ_PASSWORD }}' \
-              imageTag=${{ github.sha }}
+            --parameters @/tmp/apps-params.json
 
       - name: Print app URLs
         run: |
