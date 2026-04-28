@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 @description('Azure region for all resources')
-param location string = 'eastus'
+param location string = 'centralus'
 
 @description('Name of the resource group to create')
 param resourceGroupName string = 'rg-eshop'
