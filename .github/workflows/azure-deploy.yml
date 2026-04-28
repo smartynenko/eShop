@@ -38,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: azure/login@v2
+      - uses: azure/login@v3
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
@@ -98,7 +98,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v5
 
-      - uses: azure/login@v2
+      - uses: azure/login@v3
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
@@ -122,7 +122,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: azure/login@v2
+      - uses: azure/login@v3
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
