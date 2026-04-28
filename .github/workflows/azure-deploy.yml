@@ -43,7 +43,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy Bicep infrastructure
-        id: deploy
+        id: outputs
         run: |
           OUTPUT=$(az deployment sub create \
             --name eshop-infra-${{ github.run_number }} \
@@ -55,22 +55,17 @@ jobs:
               postgresAdminPassword='${{ secrets.POSTGRES_ADMIN_PASSWORD }}' \
             --query properties.outputs \
             --output json)
-          echo "deployment-output=$OUTPUT" >> $GITHUB_OUTPUT
 
-      - name: Extract outputs
-        id: outputs
-        run: |
-          OUTPUT='${{ steps.deploy.outputs.deployment-output }}'
-          echo "acr-login-server=$(echo $OUTPUT | jq -r '.acrLoginServer.value')"              >> $GITHUB_OUTPUT
-          echo "acr-name=$(echo $OUTPUT | jq -r '.acrName.value')"                            >> $GITHUB_OUTPUT
-          echo "resource-group=$(echo $OUTPUT | jq -r '.resourceGroupName.value')"            >> $GITHUB_OUTPUT
-          echo "container-apps-env-id=$(echo $OUTPUT | jq -r '.containerAppsEnvironmentId.value')"     >> $GITHUB_OUTPUT
+          echo "acr-login-server=$(echo $OUTPUT | jq -r '.acrLoginServer.value')"                       >> $GITHUB_OUTPUT
+          echo "acr-name=$(echo $OUTPUT | jq -r '.acrName.value')"                                      >> $GITHUB_OUTPUT
+          echo "resource-group=$(echo $OUTPUT | jq -r '.resourceGroupName.value')"                      >> $GITHUB_OUTPUT
+          echo "container-apps-env-id=$(echo $OUTPUT | jq -r '.containerAppsEnvironmentId.value')"      >> $GITHUB_OUTPUT
           echo "container-apps-env-domain=$(echo $OUTPUT | jq -r '.containerAppsEnvironmentDomain.value')" >> $GITHUB_OUTPUT
-          echo "postgres-server-name=$(echo $OUTPUT | jq -r '.postgresServerName.value')"     >> $GITHUB_OUTPUT
-          echo "postgres-admin-user=$(echo $OUTPUT | jq -r '.postgresAdminUser.value')"       >> $GITHUB_OUTPUT
-          echo "postgres-host=$(echo $OUTPUT | jq -r '.postgresHost.value')"                 >> $GITHUB_OUTPUT
-          echo "redis-name=$(echo $OUTPUT | jq -r '.redisName.value')"                        >> $GITHUB_OUTPUT
-          echo "managed-identity-id=$(echo $OUTPUT | jq -r '.managedIdentityId.value')"       >> $GITHUB_OUTPUT
+          echo "postgres-server-name=$(echo $OUTPUT | jq -r '.postgresServerName.value')"               >> $GITHUB_OUTPUT
+          echo "postgres-admin-user=$(echo $OUTPUT | jq -r '.postgresAdminUser.value')"                 >> $GITHUB_OUTPUT
+          echo "postgres-host=$(echo $OUTPUT | jq -r '.postgresHost.value')"                            >> $GITHUB_OUTPUT
+          echo "redis-name=$(echo $OUTPUT | jq -r '.redisName.value')"                                  >> $GITHUB_OUTPUT
+          echo "managed-identity-id=$(echo $OUTPUT | jq -r '.managedIdentityId.value')"                 >> $GITHUB_OUTPUT
 
   # ── 2. Build and push container images in parallel ─────────────────────────
   build-and-push:
