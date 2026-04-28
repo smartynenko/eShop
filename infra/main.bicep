@@ -33,6 +33,7 @@ output acrName string = infra.outputs.acrName
 output containerAppsEnvironmentId string = infra.outputs.containerAppsEnvironmentId
 output containerAppsEnvironmentDomain string = infra.outputs.containerAppsEnvironmentDomain
 output postgresServerName string = infra.outputs.postgresServerName
+output postgresHost string = infra.outputs.postgresHost
 output postgresAdminUser string = infra.outputs.postgresAdminUser
 output redisName string = infra.outputs.redisName
 output managedIdentityId string = infra.outputs.managedIdentityId
