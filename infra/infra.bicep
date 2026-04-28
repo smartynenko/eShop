@@ -22,13 +22,19 @@ module acr 'modules/containerRegistry.bicep' = {
   }
 }
 
+// Use the known name (derived from suffix) so listKeys() can be resolved at deployment time
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = {
+  name: 'log-eshop-${suffix}'
+  dependsOn: [logAnalytics]
+}
+
 module containerAppsEnv 'modules/containerAppsEnvironment.bicep' = {
   name: 'containerAppsEnv'
   params: {
     name: 'cae-eshop-${suffix}'
     location: location
     logAnalyticsWorkspaceId: logAnalytics.outputs.workspaceId
-    logAnalyticsWorkspaceKey: logAnalytics.outputs.workspaceKey
+    logAnalyticsWorkspaceKey: logAnalyticsWorkspace.listKeys().primarySharedKey
   }
 }
 
