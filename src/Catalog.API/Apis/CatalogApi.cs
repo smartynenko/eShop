@@ -48,6 +48,12 @@ public static class CatalogApi
             .WithSummary("Get catalog item picture")
             .WithDescription("Get the picture for a catalog item")
             .WithTags("Items");
+        api.MapGet("/items/count",
+            async (CatalogContext context) => TypedResults.Ok(await context.CatalogItems.LongCountAsync()))
+            .WithName("GetItemCount")
+            .WithSummary("Get catalog item count")
+            .WithDescription("Get the total number of items in the catalog")
+            .WithTags("Items");
 
         // Routes for resolving catalog items using AI.
         v1.MapGet("/items/withsemanticrelevance/{text:minlength(1)}", GetItemsBySemanticRelevanceV1)

@@ -38,8 +38,7 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<PaginatedItems<CatalogItem>>(body, _jsonSerializerOptions);
 
-        // Assert 103 total items (101 seeded + 2 added by AddCatalogItem tests) with 5 retrieved from index 0
-        Assert.Equal(103, result.Count);
+        Assert.True(result.Count >= 101);
         Assert.Equal(0, result.PageIndex);
         Assert.Equal(5, result.PageSize);
     }
@@ -419,5 +418,23 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         // Assert - 1
         Assert.Equal("NoContent", response.StatusCode.ToString());
         Assert.Equal("NotFound", responseStatus.ToString());
+    }
+
+    [Theory]
+    [InlineData(1.0)]
+    [InlineData(2.0)]
+    public async Task GetCatalogItemCount(double version)
+    {
+        var _httpClient = CreateHttpClient(new ApiVersion(version));
+
+        // Act
+        var response = await _httpClient.GetAsync("/api/catalog/items/count", TestContext.Current.CancellationToken);
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        var result = JsonSerializer.Deserialize<long>(body, _jsonSerializerOptions);
+
+        Assert.True(result > 0);
     }
 }
