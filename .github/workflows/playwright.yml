@@ -34,6 +34,12 @@ jobs:
       run: |
         dotnet dev-certs https --clean
         dotnet dev-certs https --trust
+    - name: Pre-pull container images
+      run: |
+        docker pull ankane/pgvector:latest &
+        docker pull redis:latest &
+        docker pull rabbitmq:latest &
+        wait
     - name: Install Playwright Browsers
       run: npx playwright install chromium
     - name: Run Playwright tests
