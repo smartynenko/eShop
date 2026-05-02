@@ -22,7 +22,7 @@ dotnet run --project src/eShop.AppHost/eShop.AppHost.csproj
 
 ```bash
 dotnet test                        # all tests
-dotnet test tests/Basket.UnitTests/Basket.UnitTests.csproj
+dotnet test --project tests/Basket.UnitTests/Basket.UnitTests.csproj
 dotnet test --filter "BasketServiceTests.GetBasketReturnsEmptyForNoUser"
 ```
 

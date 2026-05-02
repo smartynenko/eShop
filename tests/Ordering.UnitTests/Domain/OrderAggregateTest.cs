@@ -106,6 +106,127 @@ public class OrderAggregateTest
     }
 
     [TestMethod]
+    public void Add_order_item_success()
+    {
+        //Arrange
+        var address = new AddressBuilder().Build();
+        var order = new OrderBuilder(address).Build();
+
+        //Act
+        order.AddOrderItem(1, "cup", 10.0m, 0, string.Empty, 3);
+
+        //Assert
+        Assert.HasCount(1, order.OrderItems);
+        var item = order.OrderItems.First();
+        Assert.AreEqual(1, item.ProductId);
+        Assert.AreEqual(3, item.Units);
+        Assert.AreEqual(10.0m, item.UnitPrice);
+    }
+
+    [TestMethod]
+    public void Add_duplicate_order_item_adds_units()
+    {
+        //Arrange
+        var address = new AddressBuilder().Build();
+        var order = new OrderBuilder(address)
+            .AddOne(1, "cup", 10.0m, 0, string.Empty, 2)
+            .Build();
+
+        //Act
+        order.AddOrderItem(1, "cup", 10.0m, 0, string.Empty, 3);
+
+        //Assert
+        Assert.HasCount(1, order.OrderItems);
+        Assert.AreEqual(5, order.OrderItems.First().Units);
+    }
+
+    [TestMethod]
+    public void Add_duplicate_order_item_with_higher_discount_updates_discount()
+    {
+        //Arrange
+        var address = new AddressBuilder().Build();
+        var order = new OrderBuilder(address)
+            .AddOne(1, "cup", 10.0m, 2, string.Empty, 5)
+            .Build();
+
+        //Act
+        order.AddOrderItem(1, "cup", 10.0m, 5, string.Empty, 1);
+
+        //Assert
+        Assert.HasCount(1, order.OrderItems);
+        var item = order.OrderItems.First();
+        Assert.AreEqual(5, item.Discount);
+        Assert.AreEqual(6, item.Units);
+    }
+
+    [TestMethod]
+    public void Add_duplicate_order_item_with_lower_discount_keeps_existing_discount()
+    {
+        //Arrange
+        var address = new AddressBuilder().Build();
+        var order = new OrderBuilder(address)
+            .AddOne(1, "cup", 10.0m, 5, string.Empty, 5)
+            .Build();
+
+        //Act
+        order.AddOrderItem(1, "cup", 10.0m, 2, string.Empty, 1);
+
+        //Assert
+        Assert.HasCount(1, order.OrderItems);
+        var item = order.OrderItems.First();
+        Assert.AreEqual(5, item.Discount);
+        Assert.AreEqual(6, item.Units);
+    }
+
+    [TestMethod]
+    public void Add_multiple_different_order_items()
+    {
+        //Arrange
+        var address = new AddressBuilder().Build();
+        var order = new OrderBuilder(address).Build();
+
+        //Act
+        order.AddOrderItem(1, "cup", 10.0m, 0, string.Empty);
+        order.AddOrderItem(2, "plate", 15.0m, 0, string.Empty);
+
+        //Assert
+        Assert.HasCount(2, order.OrderItems);
+    }
+
+    [TestMethod]
+    public void Add_order_item_with_invalid_units_throws_exception()
+    {
+        //Arrange
+        var address = new AddressBuilder().Build();
+        var order = new OrderBuilder(address).Build();
+
+        //Act - Assert
+        Assert.ThrowsExactly<OrderingDomainException>(() => order.AddOrderItem(1, "cup", 10.0m, 0, string.Empty, -1));
+    }
+
+    [TestMethod]
+    public void Add_order_item_with_zero_units_throws_exception()
+    {
+        //Arrange
+        var address = new AddressBuilder().Build();
+        var order = new OrderBuilder(address).Build();
+
+        //Act - Assert
+        Assert.ThrowsExactly<OrderingDomainException>(() => order.AddOrderItem(1, "cup", 10.0m, 0, string.Empty, 0));
+    }
+
+    [TestMethod]
+    public void Add_order_item_with_discount_exceeding_total_throws_exception()
+    {
+        //Arrange
+        var address = new AddressBuilder().Build();
+        var order = new OrderBuilder(address).Build();
+
+        //Act - Assert
+        Assert.ThrowsExactly<OrderingDomainException>(() => order.AddOrderItem(1, "cup", 10.0m, 15, string.Empty, 1));
+    }
+
+    [TestMethod]
     public void Add_new_Order_raises_new_event()
     {
         //Arrange
