@@ -38,7 +38,7 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
         var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<PaginatedItems<CatalogItem>>(body, _jsonSerializerOptions);
 
-        Assert.True(result.Count >= 101);
+        Assert.True(result.Count >= 101, $"Expected at least 101 seeded items, got {result.Count}");
         Assert.Equal(0, result.PageIndex);
         Assert.Equal(5, result.PageSize);
     }

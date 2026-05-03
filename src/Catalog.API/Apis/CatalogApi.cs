@@ -48,8 +48,7 @@ public static class CatalogApi
             .WithSummary("Get catalog item picture")
             .WithDescription("Get the picture for a catalog item")
             .WithTags("Items");
-        api.MapGet("/items/count",
-            async (CatalogContext context) => TypedResults.Ok(await context.CatalogItems.LongCountAsync()))
+        api.MapGet("/items/count", GetItemCount)
             .WithName("GetItemCount")
             .WithSummary("Get catalog item count")
             .WithDescription("Get the total number of items in the catalog")
@@ -227,6 +226,12 @@ public static class CatalogApi
         DateTime lastModified = File.GetLastWriteTimeUtc(path);
 
         return TypedResults.PhysicalFile(path, mimetype, lastModified: lastModified);
+    }
+
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    public static async Task<Ok<long>> GetItemCount([AsParameters] CatalogServices services)
+    {
+        return TypedResults.Ok(await services.Context.CatalogItems.LongCountAsync());
     }
 
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
