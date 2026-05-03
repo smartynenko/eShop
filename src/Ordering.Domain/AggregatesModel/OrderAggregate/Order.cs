@@ -19,6 +19,9 @@ public class Order
     
     public string Description { get; private set; }
 
+    [MaxLength(500)]
+    public string Notes { get; set; }
+
     // Draft orders have this set to true. Currently we don't check anywhere the draft status of an Order, but we could do it if needed
 #pragma warning disable CS0414 // The field 'Order._isDraft' is assigned but its value is never used
     private bool _isDraft;
