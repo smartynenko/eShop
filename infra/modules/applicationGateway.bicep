@@ -127,14 +127,14 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
     ]
 
     // Backend pools use FQDNs resolved via Private DNS → CAE static IP.
-    // HTTP:80 — Container Apps ingress has allowInsecure:true so Envoy accepts HTTP.
+    // HTTPS:443 — CAE certs are from a well-known CA, trusted by App Gateway v2.
     // pickHostNameFromBackendAddress sends the correct Host header for Envoy routing.
     backendHttpSettingsCollection: [
       {
         name: 'settings-webapp'
         properties: {
-          port: 80
-          protocol: 'Http'
+          port: 443
+          protocol: 'Https'
           cookieBasedAffinity: 'Disabled'
           requestTimeout: 30
           pickHostNameFromBackendAddress: true
@@ -144,8 +144,8 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       {
         name: 'settings-identity-api'
         properties: {
-          port: 80
-          protocol: 'Http'
+          port: 443
+          protocol: 'Https'
           cookieBasedAffinity: 'Disabled'
           requestTimeout: 30
           pickHostNameFromBackendAddress: true
@@ -155,8 +155,8 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       {
         name: 'settings-webhooksclient'
         properties: {
-          port: 80
-          protocol: 'Http'
+          port: 443
+          protocol: 'Https'
           cookieBasedAffinity: 'Disabled'
           requestTimeout: 30
           pickHostNameFromBackendAddress: true
@@ -166,8 +166,8 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       {
         name: 'settings-mobile-bff'
         properties: {
-          port: 80
-          protocol: 'Http'
+          port: 443
+          protocol: 'Https'
           cookieBasedAffinity: 'Disabled'
           requestTimeout: 30
           pickHostNameFromBackendAddress: true
@@ -180,45 +180,49 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       {
         name: 'probe-webapp'
         properties: {
-          protocol: 'Http'
-          path: '/health'
+          protocol: 'Https'
+          path: '/'
           interval: 30
           timeout: 30
           unhealthyThreshold: 3
           pickHostNameFromBackendHttpSettings: true
+          match: { statusCodes: [ '200-399' ] }
         }
       }
       {
         name: 'probe-identity-api'
         properties: {
-          protocol: 'Http'
-          path: '/health'
+          protocol: 'Https'
+          path: '/'
           interval: 30
           timeout: 30
           unhealthyThreshold: 3
           pickHostNameFromBackendHttpSettings: true
+          match: { statusCodes: [ '200-399' ] }
         }
       }
       {
         name: 'probe-webhooksclient'
         properties: {
-          protocol: 'Http'
-          path: '/health'
+          protocol: 'Https'
+          path: '/'
           interval: 30
           timeout: 30
           unhealthyThreshold: 3
           pickHostNameFromBackendHttpSettings: true
+          match: { statusCodes: [ '200-399' ] }
         }
       }
       {
         name: 'probe-mobile-bff'
         properties: {
-          protocol: 'Http'
-          path: '/health'
+          protocol: 'Https'
+          path: '/'
           interval: 30
           timeout: 30
           unhealthyThreshold: 3
           pickHostNameFromBackendHttpSettings: true
+          match: { statusCodes: [ '200-399' ] }
         }
       }
     ]
