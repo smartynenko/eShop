@@ -96,7 +96,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
         name: 'pool-webapp'
         properties: {
           backendAddresses: [
-            { ipAddress: containerAppsStaticIp }
+            { fqdn: webappHostname }
           ]
         }
       }
@@ -104,7 +104,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
         name: 'pool-identity-api'
         properties: {
           backendAddresses: [
-            { ipAddress: containerAppsStaticIp }
+            { fqdn: identityApiHostname }
           ]
         }
       }
@@ -112,7 +112,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
         name: 'pool-webhooksclient'
         properties: {
           backendAddresses: [
-            { ipAddress: containerAppsStaticIp }
+            { fqdn: webhookClientHostname }
           ]
         }
       }
@@ -120,14 +120,14 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
         name: 'pool-mobile-bff'
         properties: {
           backendAddresses: [
-            { ipAddress: containerAppsStaticIp }
+            { fqdn: mobileBffHostname }
           ]
         }
       }
     ]
 
-    // Backend connections use HTTP on port 80 inside the VNet.
-    // hostName overrides the Host header so the CAE internal LB routes to the correct app.
+    // Backend pools use FQDNs resolved via Private DNS → CAE static IP.
+    // pickHostNameFromBackendAddress sends the correct Host header for Envoy routing.
     backendHttpSettingsCollection: [
       {
         name: 'settings-webapp'
@@ -136,8 +136,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
           protocol: 'Https'
           cookieBasedAffinity: 'Disabled'
           requestTimeout: 30
-          pickHostNameFromBackendAddress: false
-          hostName: webappHostname
+          pickHostNameFromBackendAddress: true
           probe: { id: resourceId('Microsoft.Network/applicationGateways/probes', name, 'probe-webapp') }
         }
       }
@@ -148,8 +147,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
           protocol: 'Https'
           cookieBasedAffinity: 'Disabled'
           requestTimeout: 30
-          pickHostNameFromBackendAddress: false
-          hostName: identityApiHostname
+          pickHostNameFromBackendAddress: true
           probe: { id: resourceId('Microsoft.Network/applicationGateways/probes', name, 'probe-identity-api') }
         }
       }
@@ -160,8 +158,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
           protocol: 'Https'
           cookieBasedAffinity: 'Disabled'
           requestTimeout: 30
-          pickHostNameFromBackendAddress: false
-          hostName: webhookClientHostname
+          pickHostNameFromBackendAddress: true
           probe: { id: resourceId('Microsoft.Network/applicationGateways/probes', name, 'probe-webhooksclient') }
         }
       }
@@ -172,8 +169,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
           protocol: 'Https'
           cookieBasedAffinity: 'Disabled'
           requestTimeout: 30
-          pickHostNameFromBackendAddress: false
-          hostName: mobileBffHostname
+          pickHostNameFromBackendAddress: true
           probe: { id: resourceId('Microsoft.Network/applicationGateways/probes', name, 'probe-mobile-bff') }
         }
       }
@@ -184,44 +180,44 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
         name: 'probe-webapp'
         properties: {
           protocol: 'Https'
-          host: webappHostname
           path: '/health'
           interval: 30
           timeout: 30
           unhealthyThreshold: 3
+          pickHostNameFromBackendHttpSettings: true
         }
       }
       {
         name: 'probe-identity-api'
         properties: {
           protocol: 'Https'
-          host: identityApiHostname
           path: '/health'
           interval: 30
           timeout: 30
           unhealthyThreshold: 3
+          pickHostNameFromBackendHttpSettings: true
         }
       }
       {
         name: 'probe-webhooksclient'
         properties: {
           protocol: 'Https'
-          host: webhookClientHostname
           path: '/health'
           interval: 30
           timeout: 30
           unhealthyThreshold: 3
+          pickHostNameFromBackendHttpSettings: true
         }
       }
       {
         name: 'probe-mobile-bff'
         properties: {
           protocol: 'Https'
-          host: mobileBffHostname
           path: '/health'
           interval: 30
           timeout: 30
           unhealthyThreshold: 3
+          pickHostNameFromBackendHttpSettings: true
         }
       }
     ]
