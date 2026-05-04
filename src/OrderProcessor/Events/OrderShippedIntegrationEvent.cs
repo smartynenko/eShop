@@ -1,3 +1,5 @@
+// coauthored with claude
+
 namespace eShop.OrderProcessor.Events
 {
     using eShop.EventBus.Events;
