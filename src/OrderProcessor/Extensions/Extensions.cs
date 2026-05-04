@@ -16,10 +16,12 @@ public static class Extensions
             .BindConfiguration(nameof(BackgroundTaskOptions));
 
         builder.Services.AddHostedService<GracePeriodManagerService>();
+        builder.Services.AddHostedService<OrderShippedManagerService>();
     }
 }
 
 [JsonSerializable(typeof(GracePeriodConfirmedIntegrationEvent))]
+[JsonSerializable(typeof(OrderShippedIntegrationEvent))]
 partial class IntegrationEventContext : JsonSerializerContext
 {
 
