@@ -1,0 +1,102 @@
+# eShop CODEOWNERS
+# Each line is a file pattern followed by one or more owners.
+# Later rules take precedence over earlier ones.
+
+# -------------------------------------------------------
+# Default: engineering leads own everything not matched below
+# -------------------------------------------------------
+* @engineering-leads
+
+# -------------------------------------------------------
+# Root config files
+# -------------------------------------------------------
+/*.md @engineering-leads
+/*.props @engineering-leads
+/*.targets @engineering-leads
+/*.slnx @engineering-leads
+/*.slnf @engineering-leads
+/*.json @engineering-leads
+/*.yml @engineering-leads
+/*.config @engineering-leads
+/*.ts @engineering-leads
+/.editorconfig @engineering-leads
+/.gitignore @engineering-leads
+/.gitattributes @engineering-leads
+
+# -------------------------------------------------------
+# Infrastructure / deployment
+# -------------------------------------------------------
+/infra/ @platform-team
+
+# -------------------------------------------------------
+# Platform: Aspire orchestration and service defaults
+# -------------------------------------------------------
+/src/eShop.AppHost/ @platform-team
+/src/eShop.ServiceDefaults/ @platform-team
+
+# -------------------------------------------------------
+# Platform: Event bus
+# -------------------------------------------------------
+/src/EventBus/ @platform-team
+/src/EventBusRabbitMQ/ @platform-team
+/src/IntegrationEventLogEF/ @platform-team
+
+# -------------------------------------------------------
+# Ordering service
+# -------------------------------------------------------
+/src/Ordering.API/ @ordering-team
+/src/Ordering.Domain/ @ordering-team
+/src/Ordering.Infrastructure/ @ordering-team
+/src/OrderProcessor/ @ordering-team
+/src/PaymentProcessor/ @ordering-team
+
+# -------------------------------------------------------
+# Catalog service
+# -------------------------------------------------------
+/src/Catalog.API/ @catalog-team
+
+# -------------------------------------------------------
+# Basket service
+# -------------------------------------------------------
+/src/Basket.API/ @basket-team
+
+# -------------------------------------------------------
+# Identity service
+# -------------------------------------------------------
+/src/Identity.API/ @identity-team @security-team
+
+# -------------------------------------------------------
+# Web frontends (no specific team listed — fall through to default)
+# -------------------------------------------------------
+/src/WebApp/ @engineering-leads
+/src/WebAppComponents/ @engineering-leads
+/src/ClientApp/ @engineering-leads
+/src/HybridApp/ @engineering-leads
+
+# -------------------------------------------------------
+# Webhooks
+# -------------------------------------------------------
+/src/Webhooks.API/ @engineering-leads
+/src/WebhookClient/ @engineering-leads
+
+# -------------------------------------------------------
+# Shared
+# -------------------------------------------------------
+/src/Shared/ @platform-team
+
+# -------------------------------------------------------
+# Tests: ownership follows the service they test
+# -------------------------------------------------------
+/tests/Ordering.UnitTests/ @ordering-team
+/tests/Ordering.FunctionalTests/ @ordering-team
+/tests/OrderProcessor.UnitTests/ @ordering-team
+/tests/OrderProcessor.FunctionalTests/ @ordering-team
+/tests/Catalog.FunctionalTests/ @catalog-team
+/tests/Basket.UnitTests/ @basket-team
+/tests/ClientApp.UnitTests/ @engineering-leads
+
+# -------------------------------------------------------
+# CI / GitHub config
+# -------------------------------------------------------
+/.github/ @platform-team @engineering-leads
+/.claude/ @engineering-leads
