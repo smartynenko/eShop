@@ -54,6 +54,28 @@ var backendRoutingRules = [for (backend, i) in backends: {
   }
 }]
 
+resource wafPolicy 'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2024-01-01' = {
+  name: '${name}-waf-policy'
+  location: location
+  properties: {
+    policySettings: {
+      state: 'Enabled'
+      mode: 'Prevention'
+      requestBodyCheck: true
+      maxRequestBodySizeInKb: 128
+      fileUploadLimitInMb: 100
+    }
+    managedRules: {
+      managedRuleSets: [
+        {
+          ruleSetType: 'OWASP'
+          ruleSetVersion: '3.2'
+        }
+      ]
+    }
+  }
+}
+
 resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
   name: name
   location: location
@@ -61,6 +83,9 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
     sku: {
       name: 'WAF_v2'
       tier: 'WAF_v2'
+    }
+    firewallPolicy: {
+      id: wafPolicy.id
     }
     autoscaleConfiguration: {
       minCapacity: 1
@@ -132,16 +157,6 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
     httpListeners: backendListeners
 
     requestRoutingRules: backendRoutingRules
-
-    webApplicationFirewallConfiguration: {
-      enabled: true
-      firewallMode: 'Prevention'
-      ruleSetType: 'OWASP'
-      ruleSetVersion: '3.2'
-      requestBodyCheck: true
-      maxRequestBodySizeInKb: 128
-      fileUploadLimitInMb: 100
-    }
   }
 }
 
