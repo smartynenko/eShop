@@ -34,6 +34,29 @@ resource publicIp 'Microsoft.Network/publicIPAddresses@2024-01-01' = {
   }
 }
 
+// Pre-compute loop-generated arrays — Bicep does not allow for-expressions inside concat() in resource properties
+var backendListeners = [for backend in backends: {
+  name: 'listener-${backend.name}'
+  properties: {
+    frontendIPConfiguration: { id: resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', name, frontendIpName) }
+    frontendPort: { id: resourceId('Microsoft.Network/applicationGateways/frontendPorts', name, frontendPortName) }
+    protocol: 'Https'
+    sslCertificate: { id: resourceId('Microsoft.Network/applicationGateways/sslCertificates', name, sslCertName) }
+    hostName: backend.hostname
+  }
+}]
+
+var backendRoutingRules = [for (backend, i) in backends: {
+  name: 'rule-${backend.name}'
+  properties: {
+    priority: 200 + i
+    ruleType: 'Basic'
+    httpListener: { id: resourceId('Microsoft.Network/applicationGateways/httpListeners', name, 'listener-${backend.name}') }
+    backendAddressPool: { id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', name, 'pool-${backend.name}') }
+    backendHttpSettings: { id: resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', name, 'settings-${backend.name}') }
+  }
+}]
+
 resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
   name: name
   location: location
@@ -75,7 +98,6 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       }
     ]
 
-    // One backend pool per external-facing Container App, all pointing to the CAE internal IP
     backendAddressPools: [for backend in backends: {
       name: 'pool-${backend.name}'
       properties: {
@@ -111,7 +133,6 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       }
     }]
 
-    // HTTP listener on port 80 — redirects to HTTPS
     httpListeners: concat(
       [
         {
@@ -123,16 +144,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
           }
         }
       ],
-      [for backend in backends: {
-        name: 'listener-${backend.name}'
-        properties: {
-          frontendIPConfiguration: { id: resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', name, frontendIpName) }
-          frontendPort: { id: resourceId('Microsoft.Network/applicationGateways/frontendPorts', name, frontendPortName) }
-          protocol: 'Https'
-          sslCertificate: { id: resourceId('Microsoft.Network/applicationGateways/sslCertificates', name, sslCertName) }
-          hostName: backend.hostname
-        }
-      }]
+      backendListeners
     )
 
     // SSL certificate placeholder — replace with Key Vault reference or PFX for production
@@ -172,16 +184,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
           }
         }
       ],
-      [for (backend, i) in backends: {
-        name: 'rule-${backend.name}'
-        properties: {
-          priority: 200 + i
-          ruleType: 'Basic'
-          httpListener: { id: resourceId('Microsoft.Network/applicationGateways/httpListeners', name, 'listener-${backend.name}') }
-          backendAddressPool: { id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', name, 'pool-${backend.name}') }
-          backendHttpSettings: { id: resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', name, 'settings-${backend.name}') }
-        }
-      }]
+      backendRoutingRules
     )
 
     webApplicationFirewallConfiguration: {
