@@ -47,6 +47,15 @@ module containerAppsEnv 'modules/containerAppsEnvironment.bicep' = {
   }
 }
 
+module privateDns 'modules/privateDnsZone.bicep' = {
+  name: 'privateDns'
+  params: {
+    containerAppsDefaultDomain: containerAppsEnv.outputs.defaultDomain
+    containerAppsStaticIp: containerAppsEnv.outputs.staticIp
+    vnetId: vnet.outputs.vnetId
+  }
+}
+
 module appGateway 'modules/applicationGateway.bicep' = {
   name: 'appGateway'
   params: {
@@ -56,6 +65,7 @@ module appGateway 'modules/applicationGateway.bicep' = {
     containerAppsDefaultDomain: containerAppsEnv.outputs.defaultDomain
     containerAppsStaticIp: containerAppsEnv.outputs.staticIp
   }
+  dependsOn: [privateDns]
 }
 
 module postgres 'modules/postgres.bicep' = {
