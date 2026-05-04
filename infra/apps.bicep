@@ -100,7 +100,8 @@ resource identityApi 'Microsoft.App/containerApps@2024-03-01' = {
           image: '${acrLoginServer}/identity-api:${imageTag}'
           resources: { cpu: json('0.5'), memory: '1Gi' }
           env: [
-            { name: 'ASPNETCORE_ENVIRONMENT', value: 'Production' }
+            { name: 'ASPNETCORE_ENVIRONMENT',              value: 'Production' }
+            { name: 'ASPNETCORE_FORWARDEDHEADERS_ENABLED', value: 'true' }
             { name: 'ConnectionStrings__identitydb', secretRef: 'identity-db' }
             { name: 'BasketApiClient',   value: 'http://basket-api' }
             { name: 'OrderingApiClient', value: 'http://ordering-api' }
@@ -143,7 +144,8 @@ resource catalogApi 'Microsoft.App/containerApps@2024-03-01' = {
           image: '${acrLoginServer}/catalog-api:${imageTag}'
           resources: { cpu: json('0.5'), memory: '1Gi' }
           env: [
-            { name: 'ASPNETCORE_ENVIRONMENT',       value: 'Production' }
+            { name: 'ASPNETCORE_ENVIRONMENT',              value: 'Production' }
+            { name: 'ASPNETCORE_FORWARDEDHEADERS_ENABLED', value: 'true' }
             { name: 'ConnectionStrings__catalogdb', secretRef: 'catalog-db' }
             { name: 'ConnectionStrings__eventbus',  secretRef: 'eventbus' }
           ]
@@ -182,7 +184,8 @@ resource basketApi 'Microsoft.App/containerApps@2024-03-01' = {
           image: '${acrLoginServer}/basket-api:${imageTag}'
           resources: { cpu: json('0.5'), memory: '1Gi' }
           env: [
-            { name: 'ASPNETCORE_ENVIRONMENT',      value: 'Production' }
+            { name: 'ASPNETCORE_ENVIRONMENT',              value: 'Production' }
+            { name: 'ASPNETCORE_FORWARDEDHEADERS_ENABLED', value: 'true' }
             { name: 'ConnectionStrings__redis',    secretRef: 'redis' }
             { name: 'ConnectionStrings__eventbus', secretRef: 'eventbus' }
             { name: 'Identity__Url',               value: identityApiUrl }
@@ -222,7 +225,8 @@ resource orderingApi 'Microsoft.App/containerApps@2024-03-01' = {
           image: '${acrLoginServer}/ordering-api:${imageTag}'
           resources: { cpu: json('0.5'), memory: '1Gi' }
           env: [
-            { name: 'ASPNETCORE_ENVIRONMENT',        value: 'Production' }
+            { name: 'ASPNETCORE_ENVIRONMENT',              value: 'Production' }
+            { name: 'ASPNETCORE_FORWARDEDHEADERS_ENABLED', value: 'true' }
             { name: 'ConnectionStrings__orderingdb', secretRef: 'ordering-db' }
             { name: 'ConnectionStrings__eventbus',   secretRef: 'eventbus' }
             { name: 'Identity__Url',                 value: identityApiUrl }
@@ -261,7 +265,8 @@ resource orderProcessor 'Microsoft.App/containerApps@2024-03-01' = {
           image: '${acrLoginServer}/order-processor:${imageTag}'
           resources: { cpu: json('0.25'), memory: '0.5Gi' }
           env: [
-            { name: 'ASPNETCORE_ENVIRONMENT',        value: 'Production' }
+            { name: 'ASPNETCORE_ENVIRONMENT',              value: 'Production' }
+            { name: 'ASPNETCORE_FORWARDEDHEADERS_ENABLED', value: 'true' }
             { name: 'ConnectionStrings__orderingdb', secretRef: 'ordering-db' }
             { name: 'ConnectionStrings__eventbus',   secretRef: 'eventbus' }
           ]
@@ -298,7 +303,8 @@ resource paymentProcessor 'Microsoft.App/containerApps@2024-03-01' = {
           image: '${acrLoginServer}/payment-processor:${imageTag}'
           resources: { cpu: json('0.25'), memory: '0.5Gi' }
           env: [
-            { name: 'ASPNETCORE_ENVIRONMENT',      value: 'Production' }
+            { name: 'ASPNETCORE_ENVIRONMENT',              value: 'Production' }
+            { name: 'ASPNETCORE_FORWARDEDHEADERS_ENABLED', value: 'true' }
             { name: 'ConnectionStrings__eventbus', secretRef: 'eventbus' }
           ]
         }
@@ -336,7 +342,8 @@ resource webhooksApi 'Microsoft.App/containerApps@2024-03-01' = {
           image: '${acrLoginServer}/webhooks-api:${imageTag}'
           resources: { cpu: json('0.25'), memory: '0.5Gi' }
           env: [
-            { name: 'ASPNETCORE_ENVIRONMENT',        value: 'Production' }
+            { name: 'ASPNETCORE_ENVIRONMENT',              value: 'Production' }
+            { name: 'ASPNETCORE_FORWARDEDHEADERS_ENABLED', value: 'true' }
             { name: 'ConnectionStrings__webhooksdb', secretRef: 'webhooks-db' }
             { name: 'ConnectionStrings__eventbus',   secretRef: 'eventbus' }
             { name: 'Identity__Url',                 value: identityApiUrl }
@@ -372,7 +379,8 @@ resource webhookClient 'Microsoft.App/containerApps@2024-03-01' = {
           image: '${acrLoginServer}/webhooksclient:${imageTag}'
           resources: { cpu: json('0.25'), memory: '0.5Gi' }
           env: [
-            { name: 'ASPNETCORE_ENVIRONMENT',          value: 'Production' }
+            { name: 'ASPNETCORE_ENVIRONMENT',              value: 'Production' }
+            { name: 'ASPNETCORE_FORWARDEDHEADERS_ENABLED', value: 'true' }
             { name: 'IdentityUrl',                     value: identityApiUrl }
             { name: 'CallBackUrl',                     value: webhookClientUrl }
             { name: 'services__webhooks-api__http__0', value: 'http://webhooks-api' }
@@ -411,7 +419,8 @@ resource webApp 'Microsoft.App/containerApps@2024-03-01' = {
           image: '${acrLoginServer}/webapp:${imageTag}'
           resources: { cpu: json('0.5'), memory: '1Gi' }
           env: [
-            { name: 'ASPNETCORE_ENVIRONMENT',          value: 'Production' }
+            { name: 'ASPNETCORE_ENVIRONMENT',              value: 'Production' }
+            { name: 'ASPNETCORE_FORWARDEDHEADERS_ENABLED', value: 'true' }
             { name: 'ConnectionStrings__eventbus',     secretRef: 'eventbus' }
             { name: 'IdentityUrl',                     value: identityApiUrl }
             { name: 'CallBackUrl',                     value: webAppUrl }
