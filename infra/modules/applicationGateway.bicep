@@ -126,14 +126,14 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       }
     ]
 
-    // Backend connections use HTTPS to the Container Apps internal endpoints.
+    // Backend connections use HTTP on port 80 inside the VNet.
     // hostName overrides the Host header so the CAE internal LB routes to the correct app.
     backendHttpSettingsCollection: [
       {
         name: 'settings-webapp'
         properties: {
-          port: 443
-          protocol: 'Https'
+          port: 80
+          protocol: 'Http'
           cookieBasedAffinity: 'Disabled'
           requestTimeout: 30
           pickHostNameFromBackendAddress: false
@@ -144,8 +144,8 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       {
         name: 'settings-identity-api'
         properties: {
-          port: 443
-          protocol: 'Https'
+          port: 80
+          protocol: 'Http'
           cookieBasedAffinity: 'Disabled'
           requestTimeout: 30
           pickHostNameFromBackendAddress: false
@@ -156,8 +156,8 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       {
         name: 'settings-webhooksclient'
         properties: {
-          port: 443
-          protocol: 'Https'
+          port: 80
+          protocol: 'Http'
           cookieBasedAffinity: 'Disabled'
           requestTimeout: 30
           pickHostNameFromBackendAddress: false
@@ -168,8 +168,8 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       {
         name: 'settings-mobile-bff'
         properties: {
-          port: 443
-          protocol: 'Https'
+          port: 80
+          protocol: 'Http'
           cookieBasedAffinity: 'Disabled'
           requestTimeout: 30
           pickHostNameFromBackendAddress: false
@@ -183,7 +183,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       {
         name: 'probe-webapp'
         properties: {
-          protocol: 'Https'
+          protocol: 'Http'
           host: webappHostname
           path: '/health'
           interval: 30
@@ -194,7 +194,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       {
         name: 'probe-identity-api'
         properties: {
-          protocol: 'Https'
+          protocol: 'Http'
           host: identityApiHostname
           path: '/health'
           interval: 30
@@ -205,7 +205,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       {
         name: 'probe-webhooksclient'
         properties: {
-          protocol: 'Https'
+          protocol: 'Http'
           host: webhookClientHostname
           path: '/health'
           interval: 30
@@ -216,7 +216,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       {
         name: 'probe-mobile-bff'
         properties: {
-          protocol: 'Https'
+          protocol: 'Http'
           host: mobileBffHostname
           path: '/health'
           interval: 30
