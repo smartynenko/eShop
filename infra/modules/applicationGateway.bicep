@@ -10,9 +10,7 @@ param containerAppsStaticIp string
 
 var publicIpName = '${name}-pip'
 var frontendIpName = 'appGwPublicFrontendIp'
-var frontendPortName = 'port-443'
 var httpFrontendPortName = 'port-80'
-var sslCertName = 'eshop-ssl-cert'
 
 // Backend targets: external-facing Container Apps
 var backends = [
@@ -39,9 +37,8 @@ var backendListeners = [for backend in backends: {
   name: 'listener-${backend.name}'
   properties: {
     frontendIPConfiguration: { id: resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', name, frontendIpName) }
-    frontendPort: { id: resourceId('Microsoft.Network/applicationGateways/frontendPorts', name, frontendPortName) }
-    protocol: 'Https'
-    sslCertificate: { id: resourceId('Microsoft.Network/applicationGateways/sslCertificates', name, sslCertName) }
+    frontendPort: { id: resourceId('Microsoft.Network/applicationGateways/frontendPorts', name, httpFrontendPortName) }
+    protocol: 'Http'
     hostName: backend.hostname
   }
 }]
@@ -92,10 +89,6 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
         name: httpFrontendPortName
         properties: { port: 80 }
       }
-      {
-        name: frontendPortName
-        properties: { port: 443 }
-      }
     ]
 
     backendAddressPools: [for backend in backends: {
@@ -107,6 +100,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       }
     }]
 
+    // Backend connections use HTTPS to the Container Apps internal endpoints
     backendHttpSettingsCollection: [for backend in backends: {
       name: 'settings-${backend.name}'
       properties: {
@@ -133,59 +127,11 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       }
     }]
 
-    httpListeners: concat(
-      [
-        {
-          name: 'listener-http-redirect'
-          properties: {
-            frontendIPConfiguration: { id: resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', name, frontendIpName) }
-            frontendPort: { id: resourceId('Microsoft.Network/applicationGateways/frontendPorts', name, httpFrontendPortName) }
-            protocol: 'Http'
-          }
-        }
-      ],
-      backendListeners
-    )
+    // Frontend listeners on HTTP (port 80) with host-based routing
+    // TODO: Add HTTPS (port 443) listeners with a Key Vault certificate for production
+    httpListeners: backendListeners
 
-    // SSL certificate placeholder — replace with Key Vault reference or PFX for production
-    sslCertificates: [
-      {
-        name: sslCertName
-        properties: {
-          // TODO: Replace with Key Vault secret ID for production:
-          // keyVaultSecretId: 'https://<vault-name>.vault.azure.net/secrets/<cert-name>'
-          data: ''
-          password: ''
-        }
-      }
-    ]
-
-    redirectConfigurations: [
-      {
-        name: 'redirect-http-to-https'
-        properties: {
-          redirectType: 'Permanent'
-          targetListener: { id: resourceId('Microsoft.Network/applicationGateways/httpListeners', name, 'listener-${backends[0].name}') }
-          includePath: true
-          includeQueryString: true
-        }
-      }
-    ]
-
-    requestRoutingRules: concat(
-      [
-        {
-          name: 'rule-http-redirect'
-          properties: {
-            priority: 100
-            ruleType: 'Basic'
-            httpListener: { id: resourceId('Microsoft.Network/applicationGateways/httpListeners', name, 'listener-http-redirect') }
-            redirectConfiguration: { id: resourceId('Microsoft.Network/applicationGateways/redirectConfigurations', name, 'redirect-http-to-https') }
-          }
-        }
-      ],
-      backendRoutingRules
-    )
+    requestRoutingRules: backendRoutingRules
 
     webApplicationFirewallConfiguration: {
       enabled: true
