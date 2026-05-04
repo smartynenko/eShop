@@ -132,8 +132,8 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       {
         name: 'settings-webapp'
         properties: {
-          port: 80
-          protocol: 'Http'
+          port: 443
+          protocol: 'Https'
           cookieBasedAffinity: 'Disabled'
           requestTimeout: 30
           pickHostNameFromBackendAddress: false
@@ -144,8 +144,8 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       {
         name: 'settings-identity-api'
         properties: {
-          port: 80
-          protocol: 'Http'
+          port: 443
+          protocol: 'Https'
           cookieBasedAffinity: 'Disabled'
           requestTimeout: 30
           pickHostNameFromBackendAddress: false
@@ -156,8 +156,8 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       {
         name: 'settings-webhooksclient'
         properties: {
-          port: 80
-          protocol: 'Http'
+          port: 443
+          protocol: 'Https'
           cookieBasedAffinity: 'Disabled'
           requestTimeout: 30
           pickHostNameFromBackendAddress: false
@@ -168,8 +168,8 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       {
         name: 'settings-mobile-bff'
         properties: {
-          port: 80
-          protocol: 'Http'
+          port: 443
+          protocol: 'Https'
           cookieBasedAffinity: 'Disabled'
           requestTimeout: 30
           pickHostNameFromBackendAddress: false
@@ -183,7 +183,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       {
         name: 'probe-webapp'
         properties: {
-          protocol: 'Http'
+          protocol: 'Https'
           host: webappHostname
           path: '/health'
           interval: 30
@@ -194,7 +194,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       {
         name: 'probe-identity-api'
         properties: {
-          protocol: 'Http'
+          protocol: 'Https'
           host: identityApiHostname
           path: '/health'
           interval: 30
@@ -205,7 +205,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       {
         name: 'probe-webhooksclient'
         properties: {
-          protocol: 'Http'
+          protocol: 'Https'
           host: webhookClientHostname
           path: '/health'
           interval: 30
@@ -216,7 +216,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       {
         name: 'probe-mobile-bff'
         properties: {
-          protocol: 'Http'
+          protocol: 'Https'
           host: mobileBffHostname
           path: '/health'
           interval: 30
