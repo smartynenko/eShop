@@ -10,6 +10,14 @@ param resourceGroupName string = 'rg-eshop-central'
 @secure()
 param postgresAdminPassword string
 
+@description('Base64-encoded PFX certificate for App Gateway HTTPS frontend')
+@secure()
+param sslCertificatePfxBase64 string
+
+@description('Password for the PFX certificate')
+@secure()
+param sslCertificatePassword string
+
 resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: resourceGroupName
   location: location
@@ -24,6 +32,8 @@ module infra 'infra.bicep' = {
   params: {
     location: location
     postgresAdminPassword: postgresAdminPassword
+    sslCertificatePfxBase64: sslCertificatePfxBase64
+    sslCertificatePassword: sslCertificatePassword
   }
 }
 

@@ -8,9 +8,19 @@ param containerAppsDefaultDomain string
 @description('Static private IP of the Container Apps environment (internal load balancer)')
 param containerAppsStaticIp string
 
+@description('Base64-encoded PFX certificate for HTTPS frontend')
+@secure()
+param sslCertificatePfxBase64 string
+
+@description('Password for the PFX certificate')
+@secure()
+param sslCertificatePassword string
+
 var publicIpName = '${name}-pip'
 var frontendIpName = 'appGwPublicFrontendIp'
 var httpFrontendPortName = 'port-80'
+var httpsFrontendPortName = 'port-443'
+var sslCertName = 'self-signed-cert'
 
 var webappHostname        = 'webapp.${containerAppsDefaultDomain}'
 var identityApiHostname   = 'identity-api.${containerAppsDefaultDomain}'
@@ -84,10 +94,24 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       }
     ]
 
+    sslCertificates: [
+      {
+        name: sslCertName
+        properties: {
+          data: sslCertificatePfxBase64
+          password: sslCertificatePassword
+        }
+      }
+    ]
+
     frontendPorts: [
       {
         name: httpFrontendPortName
         properties: { port: 80 }
+      }
+      {
+        name: httpsFrontendPortName
+        properties: { port: 443 }
       }
     ]
 
@@ -227,12 +251,18 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       }
     ]
 
-    // Single default listener — no hostName filter, accepts any request on port 80.
-    // Routes all traffic to the webapp backend (the main public entry point).
-    // Path-based routing can be added later to split /api/identity, /webhooks, etc.
     httpListeners: [
       {
-        name: 'listener-default'
+        name: 'listener-https'
+        properties: {
+          frontendIPConfiguration: { id: resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', name, frontendIpName) }
+          frontendPort: { id: resourceId('Microsoft.Network/applicationGateways/frontendPorts', name, httpsFrontendPortName) }
+          protocol: 'Https'
+          sslCertificate: { id: resourceId('Microsoft.Network/applicationGateways/sslCertificates', name, sslCertName) }
+        }
+      }
+      {
+        name: 'listener-http-redirect'
         properties: {
           frontendIPConfiguration: { id: resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', name, frontendIpName) }
           frontendPort: { id: resourceId('Microsoft.Network/applicationGateways/frontendPorts', name, httpFrontendPortName) }
@@ -241,15 +271,36 @@ resource appGateway 'Microsoft.Network/applicationGateways@2024-01-01' = {
       }
     ]
 
+    redirectConfigurations: [
+      {
+        name: 'http-to-https'
+        properties: {
+          redirectType: 'Permanent'
+          targetListener: { id: resourceId('Microsoft.Network/applicationGateways/httpListeners', name, 'listener-https') }
+          includePath: true
+          includeQueryString: true
+        }
+      }
+    ]
+
     requestRoutingRules: [
       {
-        name: 'rule-default-to-webapp'
+        name: 'rule-https-to-webapp'
         properties: {
           priority: 100
           ruleType: 'Basic'
-          httpListener: { id: resourceId('Microsoft.Network/applicationGateways/httpListeners', name, 'listener-default') }
+          httpListener: { id: resourceId('Microsoft.Network/applicationGateways/httpListeners', name, 'listener-https') }
           backendAddressPool: { id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', name, 'pool-webapp') }
           backendHttpSettings: { id: resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', name, 'settings-webapp') }
+        }
+      }
+      {
+        name: 'rule-http-redirect'
+        properties: {
+          priority: 200
+          ruleType: 'Basic'
+          httpListener: { id: resourceId('Microsoft.Network/applicationGateways/httpListeners', name, 'listener-http-redirect') }
+          redirectConfiguration: { id: resourceId('Microsoft.Network/applicationGateways/redirectConfigurations', name, 'http-to-https') }
         }
       }
     ]

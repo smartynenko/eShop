@@ -45,6 +45,26 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Generate self-signed SSL certificate
+        id: cert
+        run: |
+          PFX_PASSWORD=$(openssl rand -base64 16)
+          openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+            -keyout /tmp/selfsigned.key \
+            -out /tmp/selfsigned.crt \
+            -subj "/CN=*.centralus.cloudapp.azure.com"
+          openssl pkcs12 -export \
+            -out /tmp/selfsigned.pfx \
+            -inkey /tmp/selfsigned.key \
+            -in /tmp/selfsigned.crt \
+            -passout "pass:${PFX_PASSWORD}"
+          PFX_BASE64=$(base64 -w 0 /tmp/selfsigned.pfx)
+          echo "::add-mask::${PFX_PASSWORD}"
+          echo "::add-mask::${PFX_BASE64}"
+          echo "pfx-base64=${PFX_BASE64}" >> $GITHUB_OUTPUT
+          echo "pfx-password=${PFX_PASSWORD}" >> $GITHUB_OUTPUT
+          rm -f /tmp/selfsigned.key /tmp/selfsigned.crt /tmp/selfsigned.pfx
+
       - name: Deploy Bicep infrastructure
         id: outputs
         run: |
@@ -56,6 +76,8 @@ jobs:
               location=${{ env.LOCATION }} \
               resourceGroupName=${{ env.RESOURCE_GROUP }} \
               postgresAdminPassword='${{ secrets.POSTGRES_ADMIN_PASSWORD }}' \
+              sslCertificatePfxBase64='${{ steps.cert.outputs.pfx-base64 }}' \
+              sslCertificatePassword='${{ steps.cert.outputs.pfx-password }}' \
             --query properties.outputs \
             --output json)
 
@@ -186,7 +208,10 @@ jobs:
         run: |
           echo "=== Application Gateway (public entry point) ==="
           echo "Public IP:   ${{ needs.deploy-infrastructure.outputs.app-gateway-public-ip }}"
-          echo "Public FQDN: https://${{ needs.deploy-infrastructure.outputs.app-gateway-public-fqdn }}"
+          echo "HTTPS URL:   https://${{ needs.deploy-infrastructure.outputs.app-gateway-public-fqdn }}"
+          echo "HTTP URL:    http://${{ needs.deploy-infrastructure.outputs.app-gateway-public-fqdn }} (redirects to HTTPS)"
+          echo ""
+          echo "NOTE: Self-signed certificate — browser will show a security warning."
           echo ""
           echo "=== Internal Container Apps (behind App Gateway) ==="
           echo "WebApp:      https://webapp.${{ needs.deploy-infrastructure.outputs.container-apps-env-domain }}"

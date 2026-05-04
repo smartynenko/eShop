@@ -3,6 +3,14 @@ param location string
 @secure()
 param postgresAdminPassword string
 
+@description('Base64-encoded PFX certificate for App Gateway HTTPS frontend')
+@secure()
+param sslCertificatePfxBase64 string
+
+@description('Password for the PFX certificate')
+@secure()
+param sslCertificatePassword string
+
 var suffix = uniqueString(resourceGroup().id)
 var postgresAdminUser = 'eshopAdmin'
 
@@ -64,6 +72,8 @@ module appGateway 'modules/applicationGateway.bicep' = {
     subnetId: vnet.outputs.appGatewaySubnetId
     containerAppsDefaultDomain: containerAppsEnv.outputs.defaultDomain
     containerAppsStaticIp: containerAppsEnv.outputs.staticIp
+    sslCertificatePfxBase64: sslCertificatePfxBase64
+    sslCertificatePassword: sslCertificatePassword
   }
   dependsOn: [privateDns]
 }
