@@ -30,11 +30,14 @@ jobs:
       resource-group:                ${{ steps.outputs.outputs.resource-group }}
       container-apps-env-id:         ${{ steps.outputs.outputs.container-apps-env-id }}
       container-apps-env-domain:     ${{ steps.outputs.outputs.container-apps-env-domain }}
+      container-apps-static-ip:      ${{ steps.outputs.outputs.container-apps-static-ip }}
       postgres-server-name:          ${{ steps.outputs.outputs.postgres-server-name }}
       postgres-admin-user:           ${{ steps.outputs.outputs.postgres-admin-user }}
       postgres-host:                 ${{ steps.outputs.outputs.postgres-host }}
       redis-name:                    ${{ steps.outputs.outputs.redis-name }}
       managed-identity-id:           ${{ steps.outputs.outputs.managed-identity-id }}
+      app-gateway-public-fqdn:       ${{ steps.outputs.outputs.app-gateway-public-fqdn }}
+      app-gateway-public-ip:         ${{ steps.outputs.outputs.app-gateway-public-ip }}
     steps:
       - uses: actions/checkout@v5
 
@@ -61,11 +64,14 @@ jobs:
           echo "resource-group=$(echo $OUTPUT | jq -r '.resourceGroupName.value')"                      >> $GITHUB_OUTPUT
           echo "container-apps-env-id=$(echo $OUTPUT | jq -r '.containerAppsEnvironmentId.value')"      >> $GITHUB_OUTPUT
           echo "container-apps-env-domain=$(echo $OUTPUT | jq -r '.containerAppsEnvironmentDomain.value')" >> $GITHUB_OUTPUT
+          echo "container-apps-static-ip=$(echo $OUTPUT | jq -r '.containerAppsStaticIp.value')"        >> $GITHUB_OUTPUT
           echo "postgres-server-name=$(echo $OUTPUT | jq -r '.postgresServerName.value')"               >> $GITHUB_OUTPUT
           echo "postgres-admin-user=$(echo $OUTPUT | jq -r '.postgresAdminUser.value')"                 >> $GITHUB_OUTPUT
           echo "postgres-host=$(echo $OUTPUT | jq -r '.postgresHost.value')"                            >> $GITHUB_OUTPUT
           echo "redis-name=$(echo $OUTPUT | jq -r '.redisName.value')"                                  >> $GITHUB_OUTPUT
           echo "managed-identity-id=$(echo $OUTPUT | jq -r '.managedIdentityId.value')"                 >> $GITHUB_OUTPUT
+          echo "app-gateway-public-fqdn=$(echo $OUTPUT | jq -r '.appGatewayPublicFqdn.value')"         >> $GITHUB_OUTPUT
+          echo "app-gateway-public-ip=$(echo $OUTPUT | jq -r '.appGatewayPublicIp.value')"             >> $GITHUB_OUTPUT
 
   # ── 2. Build and push container images in parallel ─────────────────────────
   build-and-push:
@@ -159,6 +165,7 @@ jobs:
             "acrLoginServer":                { "value": "${{ needs.deploy-infrastructure.outputs.acr-login-server }}" },
             "managedIdentityId":             { "value": "${{ needs.deploy-infrastructure.outputs.managed-identity-id }}" },
             "imageTag":                      { "value": "${{ github.sha }}" },
+            "appGatewayPublicFqdn":          { "value": "${{ needs.deploy-infrastructure.outputs.app-gateway-public-fqdn }}" },
             "rabbitmqPassword":              { "value": "${{ secrets.RABBITMQ_PASSWORD }}" },
             "catalogDbConn":                 { "value": "${{ steps.connstrings.outputs.catalog-db }}" },
             "identityDbConn":                { "value": "${{ steps.connstrings.outputs.identity-db }}" },
@@ -177,5 +184,10 @@ jobs:
 
       - name: Print app URLs
         run: |
+          echo "=== Application Gateway (public entry point) ==="
+          echo "Public IP:   ${{ needs.deploy-infrastructure.outputs.app-gateway-public-ip }}"
+          echo "Public FQDN: https://${{ needs.deploy-infrastructure.outputs.app-gateway-public-fqdn }}"
+          echo ""
+          echo "=== Internal Container Apps (behind App Gateway) ==="
           echo "WebApp:      https://webapp.${{ needs.deploy-infrastructure.outputs.container-apps-env-domain }}"
           echo "Identity:    https://identity-api.${{ needs.deploy-infrastructure.outputs.container-apps-env-domain }}"

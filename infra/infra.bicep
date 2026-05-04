@@ -22,6 +22,14 @@ module acr 'modules/containerRegistry.bicep' = {
   }
 }
 
+module vnet 'modules/virtualNetwork.bicep' = {
+  name: 'vnet'
+  params: {
+    name: 'vnet-eshop-${suffix}'
+    location: location
+  }
+}
+
 // Use the known name (derived from suffix) so listKeys() can be resolved at deployment time
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = {
   name: 'log-eshop-${suffix}'
@@ -35,6 +43,18 @@ module containerAppsEnv 'modules/containerAppsEnvironment.bicep' = {
     location: location
     logAnalyticsWorkspaceId: logAnalytics.outputs.workspaceId
     logAnalyticsWorkspaceKey: logAnalyticsWorkspace.listKeys().primarySharedKey
+    containerAppsSubnetId: vnet.outputs.containerAppsSubnetId
+  }
+}
+
+module appGateway 'modules/applicationGateway.bicep' = {
+  name: 'appGateway'
+  params: {
+    name: 'agw-eshop-${suffix}'
+    location: location
+    subnetId: vnet.outputs.appGatewaySubnetId
+    containerAppsDefaultDomain: containerAppsEnv.outputs.defaultDomain
+    containerAppsStaticIp: containerAppsEnv.outputs.staticIp
   }
 }
 
@@ -83,9 +103,12 @@ output acrLoginServer string = acr.outputs.loginServer
 output acrName string = acr.outputs.name
 output containerAppsEnvironmentId string = containerAppsEnv.outputs.environmentId
 output containerAppsEnvironmentDomain string = containerAppsEnv.outputs.defaultDomain
+output containerAppsStaticIp string = containerAppsEnv.outputs.staticIp
 output postgresServerName string = 'psql-eshop-${suffix}'
 output postgresHost string = postgres.outputs.host
 output postgresAdminUser string = postgresAdminUser
 output redisName string = redis.outputs.name
 output managedIdentityId string = managedIdentity.id
 output managedIdentityName string = managedIdentity.name
+output appGatewayPublicFqdn string = appGateway.outputs.publicFqdn
+output appGatewayPublicIp string = appGateway.outputs.publicIpAddress

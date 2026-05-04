@@ -4,6 +4,7 @@ param containerAppsEnvironmentDomain string
 param acrLoginServer string
 param managedIdentityId string
 param imageTag string
+param appGatewayPublicFqdn string
 
 // Connection strings computed in the workflow and passed as secure params
 @secure()
@@ -28,6 +29,12 @@ param eventbusConn string
 param rabbitmqPassword string
 
 // ── Public URLs ─────────────────────────────────────────────────────────────
+// External-facing services are now behind Azure Application Gateway.
+// The App Gateway terminates TLS and routes to the internal Container Apps
+// environment using host-based routing to the CAE internal FQDNs.
+
+var identityApiInternalFqdn = 'identity-api.${containerAppsEnvironmentDomain}'
+var webAppInternalFqdn      = 'webapp.${containerAppsEnvironmentDomain}'
 
 var identityApiUrl   = 'https://identity-api.${containerAppsEnvironmentDomain}'
 var webAppUrl        = 'https://webapp.${containerAppsEnvironmentDomain}'
@@ -422,3 +429,4 @@ resource webApp 'Microsoft.App/containerApps@2024-03-01' = {
 
 output webAppUrl string = 'https://${webApp.properties.configuration.ingress.fqdn}'
 output identityApiUrl string = 'https://${identityApi.properties.configuration.ingress.fqdn}'
+output appGatewayUrl string = 'https://${appGatewayPublicFqdn}'

@@ -1,0 +1,415 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1050" font-family="Segoe UI, Calibri, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#5A5A64"/>
+    </marker>
+    <marker id="arrow-grpc" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#00A7E1"/>
+    </marker>
+    <marker id="arrow-event" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#E88D2A"/>
+    </marker>
+    <marker id="arrow-http" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#41007F"/>
+    </marker>
+    <marker id="arrow-auth" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#C04040"/>
+    </marker>
+    <marker id="arrow-data" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#2D8C4E"/>
+    </marker>
+
+    <!-- shadows -->
+    <filter id="shadow" x="-4%" y="-4%" width="110%" height="115%">
+      <feDropShadow dx="1" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.10"/>
+    </filter>
+    <filter id="shadow-sm" x="-4%" y="-4%" width="110%" height="115%">
+      <feDropShadow dx="0.5" dy="1" stdDeviation="1.5" flood-color="#000" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1400" height="1050" fill="#F5F6FA" rx="0"/>
+
+  <!-- Title -->
+  <text x="700" y="38" text-anchor="middle" font-size="22" font-weight="bold" fill="#41007F">eShop Microservices Architecture</text>
+  <text x="700" y="58" text-anchor="middle" font-size="12" fill="#5A5A64">.NET Aspire Orchestrated  |  RabbitMQ Event Bus  |  PostgreSQL + Redis</text>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- LAYER 1: CLIENT APPS (top)                  -->
+  <!-- ═══════════════════════════════════════════ -->
+  <rect x="20" y="75" width="1360" height="105" rx="12" fill="#FFFFFF" stroke="#E0E4EA" stroke-width="1" filter="url(#shadow)"/>
+  <text x="40" y="96" font-size="11" font-weight="bold" fill="#00A7E1" letter-spacing="1.5">CLIENT APPLICATIONS</text>
+
+  <!-- WebApp (Blazor) -->
+  <rect x="90" y="108" width="180" height="58" rx="8" fill="#EDE7F6" stroke="#41007F" stroke-width="1.5" filter="url(#shadow-sm)"/>
+  <text x="180" y="133" text-anchor="middle" font-size="13" font-weight="bold" fill="#41007F">WebApp</text>
+  <text x="180" y="150" text-anchor="middle" font-size="10" fill="#5A5A64">Blazor Server (SSR)</text>
+
+  <!-- HybridApp (MAUI) -->
+  <rect x="330" y="108" width="180" height="58" rx="8" fill="#EDE7F6" stroke="#41007F" stroke-width="1.5" filter="url(#shadow-sm)"/>
+  <text x="420" y="133" text-anchor="middle" font-size="13" font-weight="bold" fill="#41007F">HybridApp</text>
+  <text x="420" y="150" text-anchor="middle" font-size="10" fill="#5A5A64">.NET MAUI (Mobile)</text>
+
+  <!-- WebhookClient -->
+  <rect x="570" y="108" width="180" height="58" rx="8" fill="#EDE7F6" stroke="#41007F" stroke-width="1.5" filter="url(#shadow-sm)"/>
+  <text x="660" y="133" text-anchor="middle" font-size="13" font-weight="bold" fill="#41007F">WebhookClient</text>
+  <text x="660" y="150" text-anchor="middle" font-size="10" fill="#5A5A64">Webhook Test UI</text>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- LAYER 2: REVERSE PROXY / BFF               -->
+  <!-- ═══════════════════════════════════════════ -->
+  <rect x="830" y="108" width="180" height="58" rx="8" fill="#E1F5FE" stroke="#00A7E1" stroke-width="1.5" filter="url(#shadow-sm)"/>
+  <text x="920" y="133" text-anchor="middle" font-size="13" font-weight="bold" fill="#00A7E1">Mobile BFF</text>
+  <text x="920" y="150" text-anchor="middle" font-size="10" fill="#5A5A64">YARP Reverse Proxy</text>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- LAYER 3: API SERVICES                       -->
+  <!-- ═══════════════════════════════════════════ -->
+  <rect x="20" y="200" width="1360" height="180" rx="12" fill="#FFFFFF" stroke="#E0E4EA" stroke-width="1" filter="url(#shadow)"/>
+  <text x="40" y="221" font-size="11" font-weight="bold" fill="#00A7E1" letter-spacing="1.5">API SERVICES</text>
+
+  <!-- Identity API -->
+  <rect x="55" y="235" width="200" height="125" rx="10" fill="#FFF3E0" stroke="#E88D2A" stroke-width="1.5" filter="url(#shadow-sm)"/>
+  <rect x="55" y="235" width="200" height="30" rx="10" fill="#E88D2A"/>
+  <rect x="55" y="250" width="200" height="15" fill="#E88D2A"/>
+  <text x="155" y="256" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFFFFF">Identity API</text>
+  <text x="155" y="285" text-anchor="middle" font-size="10" fill="#5A5A64">OpenID Connect / OAuth 2.0</text>
+  <text x="155" y="300" text-anchor="middle" font-size="10" fill="#5A5A64">User Authentication</text>
+  <text x="155" y="315" text-anchor="middle" font-size="10" fill="#5A5A64">Token Issuance</text>
+  <text x="155" y="335" text-anchor="middle" font-size="9" fill="#2D8C4E">identitydb (PostgreSQL)</text>
+
+  <!-- Catalog API -->
+  <rect x="300" y="235" width="200" height="125" rx="10" fill="#E8F5E9" stroke="#2D8C4E" stroke-width="1.5" filter="url(#shadow-sm)"/>
+  <rect x="300" y="235" width="200" height="30" rx="10" fill="#2D8C4E"/>
+  <rect x="300" y="250" width="200" height="15" fill="#2D8C4E"/>
+  <text x="400" y="256" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFFFFF">Catalog API</text>
+  <text x="400" y="285" text-anchor="middle" font-size="10" fill="#5A5A64">Product Management</text>
+  <text x="400" y="300" text-anchor="middle" font-size="10" fill="#5A5A64">Search &amp; Browse</text>
+  <text x="400" y="315" text-anchor="middle" font-size="10" fill="#5A5A64">Pricing (v1/v2 API)</text>
+  <text x="400" y="335" text-anchor="middle" font-size="9" fill="#2D8C4E">catalogdb (PostgreSQL + pgvector)</text>
+
+  <!-- Basket API -->
+  <rect x="545" y="235" width="200" height="125" rx="10" fill="#E1F5FE" stroke="#00A7E1" stroke-width="1.5" filter="url(#shadow-sm)"/>
+  <rect x="545" y="235" width="200" height="30" rx="10" fill="#00A7E1"/>
+  <rect x="545" y="250" width="200" height="15" fill="#00A7E1"/>
+  <text x="645" y="256" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFFFFF">Basket API</text>
+  <text x="645" y="285" text-anchor="middle" font-size="10" fill="#5A5A64">Shopping Cart</text>
+  <text x="645" y="300" text-anchor="middle" font-size="10" fill="#5A5A64">gRPC Service</text>
+  <text x="645" y="315" text-anchor="middle" font-size="10" fill="#5A5A64">Cart Checkout</text>
+  <text x="645" y="335" text-anchor="middle" font-size="9" fill="#C04040">Redis (cache store)</text>
+
+  <!-- Ordering API -->
+  <rect x="790" y="235" width="200" height="125" rx="10" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="1.5" filter="url(#shadow-sm)"/>
+  <rect x="790" y="235" width="200" height="30" rx="10" fill="#7B1FA2"/>
+  <rect x="790" y="250" width="200" height="15" fill="#7B1FA2"/>
+  <text x="890" y="256" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFFFFF">Ordering API</text>
+  <text x="890" y="285" text-anchor="middle" font-size="10" fill="#5A5A64">DDD Aggregate Root</text>
+  <text x="890" y="300" text-anchor="middle" font-size="10" fill="#5A5A64">MediatR / CQRS</text>
+  <text x="890" y="315" text-anchor="middle" font-size="10" fill="#5A5A64">Order Lifecycle</text>
+  <text x="890" y="335" text-anchor="middle" font-size="9" fill="#2D8C4E">orderingdb (PostgreSQL)</text>
+
+  <!-- Webhooks API -->
+  <rect x="1035" y="235" width="200" height="125" rx="10" fill="#FFF8E1" stroke="#F9A825" stroke-width="1.5" filter="url(#shadow-sm)"/>
+  <rect x="1035" y="235" width="200" height="30" rx="10" fill="#F9A825"/>
+  <rect x="1035" y="250" width="200" height="15" fill="#F9A825"/>
+  <text x="1135" y="256" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFFFFF">Webhooks API</text>
+  <text x="1135" y="285" text-anchor="middle" font-size="10" fill="#5A5A64">External Notifications</text>
+  <text x="1135" y="300" text-anchor="middle" font-size="10" fill="#5A5A64">Subscription Mgmt</text>
+  <text x="1135" y="315" text-anchor="middle" font-size="10" fill="#5A5A64">Event Forwarding</text>
+  <text x="1135" y="335" text-anchor="middle" font-size="9" fill="#2D8C4E">webhooksdb (PostgreSQL)</text>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- LAYER 4: BACKGROUND PROCESSORS              -->
+  <!-- ═══════════════════════════════════════════ -->
+  <rect x="20" y="400" width="1360" height="115" rx="12" fill="#FFFFFF" stroke="#E0E4EA" stroke-width="1" filter="url(#shadow)"/>
+  <text x="40" y="421" font-size="11" font-weight="bold" fill="#00A7E1" letter-spacing="1.5">BACKGROUND PROCESSORS</text>
+
+  <!-- Order Processor -->
+  <rect x="350" y="438" width="260" height="60" rx="10" fill="#FCE4EC" stroke="#C04040" stroke-width="1.5" filter="url(#shadow-sm)"/>
+  <rect x="350" y="438" width="260" height="25" rx="10" fill="#C04040"/>
+  <rect x="350" y="450" width="260" height="13" fill="#C04040"/>
+  <text x="480" y="457" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFFFFF">Order Processor</text>
+  <text x="480" y="484" text-anchor="middle" font-size="10" fill="#5A5A64">Grace Period Manager (Background Service)</text>
+
+  <!-- Payment Processor -->
+  <rect x="690" y="438" width="260" height="60" rx="10" fill="#FCE4EC" stroke="#C04040" stroke-width="1.5" filter="url(#shadow-sm)"/>
+  <rect x="690" y="438" width="260" height="25" rx="10" fill="#C04040"/>
+  <rect x="690" y="450" width="260" height="13" fill="#C04040"/>
+  <text x="820" y="457" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFFFFF">Payment Processor</text>
+  <text x="820" y="484" text-anchor="middle" font-size="10" fill="#5A5A64">Simulated Payment Gateway</text>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- LAYER 5: EVENT BUS                          -->
+  <!-- ═══════════════════════════════════════════ -->
+  <rect x="100" y="540" width="1200" height="70" rx="12" fill="#FFF3E0" stroke="#E88D2A" stroke-width="2" filter="url(#shadow)"/>
+  <text x="700" y="565" text-anchor="middle" font-size="15" font-weight="bold" fill="#E88D2A">RabbitMQ Event Bus</text>
+  <text x="700" y="583" text-anchor="middle" font-size="10" fill="#5A5A64">Asynchronous Integration Events  |  Publish / Subscribe  |  Transactional Outbox Pattern</text>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- LAYER 6: INFRASTRUCTURE                     -->
+  <!-- ═══════════════════════════════════════════ -->
+  <rect x="20" y="635" width="1360" height="110" rx="12" fill="#FFFFFF" stroke="#E0E4EA" stroke-width="1" filter="url(#shadow)"/>
+  <text x="40" y="656" font-size="11" font-weight="bold" fill="#00A7E1" letter-spacing="1.5">DATA STORES</text>
+
+  <!-- PostgreSQL -->
+  <rect x="80" y="668" width="150" height="60" rx="8" fill="#E8F5E9" stroke="#2D8C4E" stroke-width="1.5" filter="url(#shadow-sm)"/>
+  <text x="155" y="692" text-anchor="middle" font-size="12" font-weight="bold" fill="#2D8C4E">PostgreSQL</text>
+  <text x="155" y="710" text-anchor="middle" font-size="9" fill="#5A5A64">pgvector enabled</text>
+
+  <!-- DB: catalogdb -->
+  <rect x="260" y="668" width="115" height="60" rx="8" fill="#F1F8E9" stroke="#2D8C4E" stroke-width="1" filter="url(#shadow-sm)"/>
+  <text x="317" y="694" text-anchor="middle" font-size="11" font-weight="bold" fill="#2D8C4E">catalogdb</text>
+  <text x="317" y="712" text-anchor="middle" font-size="9" fill="#5A5A64">Products, Brands</text>
+
+  <!-- DB: identitydb -->
+  <rect x="395" y="668" width="115" height="60" rx="8" fill="#F1F8E9" stroke="#2D8C4E" stroke-width="1" filter="url(#shadow-sm)"/>
+  <text x="452" y="694" text-anchor="middle" font-size="11" font-weight="bold" fill="#2D8C4E">identitydb</text>
+  <text x="452" y="712" text-anchor="middle" font-size="9" fill="#5A5A64">Users, Claims</text>
+
+  <!-- DB: orderingdb -->
+  <rect x="530" y="668" width="115" height="60" rx="8" fill="#F1F8E9" stroke="#2D8C4E" stroke-width="1" filter="url(#shadow-sm)"/>
+  <text x="587" y="694" text-anchor="middle" font-size="11" font-weight="bold" fill="#2D8C4E">orderingdb</text>
+  <text x="587" y="712" text-anchor="middle" font-size="9" fill="#5A5A64">Orders, Buyers</text>
+
+  <!-- DB: webhooksdb -->
+  <rect x="665" y="668" width="115" height="60" rx="8" fill="#F1F8E9" stroke="#2D8C4E" stroke-width="1" filter="url(#shadow-sm)"/>
+  <text x="722" y="694" text-anchor="middle" font-size="11" font-weight="bold" fill="#2D8C4E">webhooksdb</text>
+  <text x="722" y="712" text-anchor="middle" font-size="9" fill="#5A5A64">Subscriptions</text>
+
+  <!-- Redis -->
+  <rect x="830" y="668" width="160" height="60" rx="8" fill="#FFEBEE" stroke="#C04040" stroke-width="1.5" filter="url(#shadow-sm)"/>
+  <text x="910" y="692" text-anchor="middle" font-size="12" font-weight="bold" fill="#C04040">Redis</text>
+  <text x="910" y="710" text-anchor="middle" font-size="9" fill="#5A5A64">Basket Cache Store</text>
+
+  <!-- .NET Aspire -->
+  <rect x="1050" y="668" width="280" height="60" rx="8" fill="#EDE7F6" stroke="#41007F" stroke-width="1.5" filter="url(#shadow-sm)"/>
+  <text x="1190" y="688" text-anchor="middle" font-size="12" font-weight="bold" fill="#41007F">.NET Aspire Orchestrator</text>
+  <text x="1190" y="704" text-anchor="middle" font-size="9" fill="#5A5A64">Service Discovery  |  Health Checks</text>
+  <text x="1190" y="718" text-anchor="middle" font-size="9" fill="#5A5A64">OpenTelemetry  |  Resilience</text>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- CONNECTIONS: Client → API (HTTP & gRPC)         -->
+  <!-- ═══════════════════════════════════════════════ -->
+
+  <!-- WebApp → Basket API (gRPC) -->
+  <line x1="230" y1="166" x2="610" y2="235" stroke="#00A7E1" stroke-width="2" stroke-dasharray="6,3" marker-end="url(#arrow-grpc)"/>
+  <rect x="355" y="185" width="52" height="16" rx="3" fill="#E1F5FE" stroke="#00A7E1" stroke-width="0.5"/>
+  <text x="381" y="196" text-anchor="middle" font-size="8" font-weight="bold" fill="#00A7E1">gRPC</text>
+
+  <!-- WebApp → Catalog API (HTTP) -->
+  <line x1="180" y1="166" x2="380" y2="235" stroke="#41007F" stroke-width="1.5" marker-end="url(#arrow-http)"/>
+  <rect x="240" y="185" width="52" height="16" rx="3" fill="#EDE7F6" stroke="#41007F" stroke-width="0.5"/>
+  <text x="266" y="196" text-anchor="middle" font-size="8" font-weight="bold" fill="#41007F">HTTP</text>
+
+  <!-- WebApp → Ordering API (HTTP) -->
+  <line x1="220" y1="166" x2="860" y2="235" stroke="#41007F" stroke-width="1.5" marker-end="url(#arrow-http)"/>
+
+  <!-- HybridApp → Mobile BFF (HTTP) -->
+  <line x1="510" y1="137" x2="830" y2="137" stroke="#41007F" stroke-width="1.5" marker-end="url(#arrow-http)"/>
+  <rect x="630" y="123" width="52" height="16" rx="3" fill="#EDE7F6" stroke="#41007F" stroke-width="0.5"/>
+  <text x="656" y="134" text-anchor="middle" font-size="8" font-weight="bold" fill="#41007F">HTTP</text>
+
+  <!-- Mobile BFF → Catalog API -->
+  <line x1="880" y1="166" x2="440" y2="235" stroke="#5A5A64" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+
+  <!-- Mobile BFF → Ordering API -->
+  <line x1="920" y1="166" x2="890" y2="235" stroke="#5A5A64" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+
+  <!-- Mobile BFF → Identity API -->
+  <line x1="960" y1="166" x2="200" y2="235" stroke="#5A5A64" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+
+  <!-- WebhookClient → Webhooks API (HTTP) -->
+  <line x1="710" y1="166" x2="1100" y2="235" stroke="#41007F" stroke-width="1.5" marker-end="url(#arrow-http)"/>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- CONNECTIONS: Auth (Identity → all services)     -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- Identity provides tokens to all services — shown via callback env vars -->
+  <line x1="155" y1="360" x2="645" y2="360" stroke="#E88D2A" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+  <line x1="155" y1="360" x2="890" y2="360" stroke="#E88D2A" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+  <line x1="155" y1="360" x2="1135" y2="360" stroke="#E88D2A" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+  <text x="550" y="373" text-anchor="middle" font-size="8" fill="#E88D2A" opacity="0.7">OpenID Connect token validation</text>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- CONNECTIONS: Services → Event Bus               -->
+  <!-- ═══════════════════════════════════════════════ -->
+
+  <!-- Catalog API → EventBus -->
+  <line x1="400" y1="360" x2="400" y2="540" stroke="#E88D2A" stroke-width="2" marker-end="url(#arrow-event)"/>
+
+  <!-- Basket API → EventBus -->
+  <line x1="645" y1="360" x2="555" y2="540" stroke="#E88D2A" stroke-width="2" marker-end="url(#arrow-event)"/>
+
+  <!-- Ordering API → EventBus -->
+  <line x1="890" y1="360" x2="810" y2="540" stroke="#E88D2A" stroke-width="2" marker-end="url(#arrow-event)"/>
+
+  <!-- Webhooks API → EventBus -->
+  <line x1="1135" y1="360" x2="1100" y2="540" stroke="#E88D2A" stroke-width="2" marker-end="url(#arrow-event)"/>
+
+  <!-- WebApp → EventBus (subscriber) -->
+  <line x1="180" y1="166" x2="250" y2="540" stroke="#E88D2A" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow-event)"/>
+
+  <!-- Order Processor → EventBus -->
+  <line x1="480" y1="498" x2="480" y2="540" stroke="#E88D2A" stroke-width="2" marker-end="url(#arrow-event)"/>
+
+  <!-- Payment Processor → EventBus -->
+  <line x1="820" y1="498" x2="820" y2="540" stroke="#E88D2A" stroke-width="2" marker-end="url(#arrow-event)"/>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- CONNECTIONS: Services → Data Stores             -->
+  <!-- ═══════════════════════════════════════════════ -->
+
+  <!-- Identity API → identitydb -->
+  <line x1="155" y1="360" x2="155" y2="635" stroke="#2D8C4E" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="155" y1="635" x2="452" y2="668" stroke="#2D8C4E" stroke-width="1.5" marker-end="url(#arrow-data)"/>
+
+  <!-- Catalog API → catalogdb -->
+  <line x1="350" y1="360" x2="317" y2="668" stroke="#2D8C4E" stroke-width="1.5" marker-end="url(#arrow-data)"/>
+
+  <!-- Ordering API → orderingdb -->
+  <line x1="890" y1="360" x2="587" y2="668" stroke="#2D8C4E" stroke-width="1.5" marker-end="url(#arrow-data)"/>
+
+  <!-- Order Processor → orderingdb -->
+  <line x1="445" y1="498" x2="570" y2="668" stroke="#2D8C4E" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#arrow-data)"/>
+
+  <!-- Webhooks API → webhooksdb -->
+  <line x1="1135" y1="360" x2="722" y2="668" stroke="#2D8C4E" stroke-width="1.5" marker-end="url(#arrow-data)"/>
+
+  <!-- Basket API → Redis -->
+  <line x1="680" y1="360" x2="910" y2="668" stroke="#C04040" stroke-width="1.5" marker-end="url(#arrow-auth)"/>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- INTEGRATION EVENT FLOW DETAIL                       -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <rect x="20" y="770" width="1360" height="270" rx="12" fill="#FFFFFF" stroke="#E0E4EA" stroke-width="1" filter="url(#shadow)"/>
+  <text x="40" y="794" font-size="11" font-weight="bold" fill="#00A7E1" letter-spacing="1.5">ORDER LIFECYCLE  |  INTEGRATION EVENT FLOW</text>
+
+  <!-- Flow steps -->
+  <!-- Step 1: Order Created -->
+  <rect x="45" y="815" width="155" height="50" rx="8" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="1"/>
+  <text x="122" y="836" text-anchor="middle" font-size="10" font-weight="bold" fill="#7B1FA2">1. Create Order</text>
+  <text x="122" y="852" text-anchor="middle" font-size="8" fill="#5A5A64">Ordering API</text>
+
+  <line x1="200" y1="840" x2="225" y2="840" stroke="#5A5A64" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Step 2: OrderStarted -->
+  <rect x="228" y="815" width="155" height="50" rx="8" fill="#FFF3E0" stroke="#E88D2A" stroke-width="1"/>
+  <text x="305" y="836" text-anchor="middle" font-size="10" font-weight="bold" fill="#E88D2A">2. OrderStarted</text>
+  <text x="305" y="852" text-anchor="middle" font-size="8" fill="#5A5A64">→ Basket: clear cart</text>
+
+  <line x1="383" y1="840" x2="408" y2="840" stroke="#5A5A64" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Step 3: Grace Period -->
+  <rect x="411" y="815" width="155" height="50" rx="8" fill="#FCE4EC" stroke="#C04040" stroke-width="1"/>
+  <text x="488" y="836" text-anchor="middle" font-size="10" font-weight="bold" fill="#C04040">3. Grace Period</text>
+  <text x="488" y="852" text-anchor="middle" font-size="8" fill="#5A5A64">Order Processor timer</text>
+
+  <line x1="566" y1="840" x2="591" y2="840" stroke="#5A5A64" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Step 4: GracePeriodConfirmed -->
+  <rect x="594" y="815" width="155" height="50" rx="8" fill="#FFF3E0" stroke="#E88D2A" stroke-width="1"/>
+  <text x="671" y="832" text-anchor="middle" font-size="10" font-weight="bold" fill="#E88D2A">4. Confirmed</text>
+  <text x="671" y="847" text-anchor="middle" font-size="8" fill="#5A5A64">→ Ordering: set</text>
+  <text x="671" y="858" text-anchor="middle" font-size="8" fill="#5A5A64">AwaitingValidation</text>
+
+  <line x1="749" y1="840" x2="774" y2="840" stroke="#5A5A64" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Step 5: AwaitingValidation -->
+  <rect x="777" y="815" width="155" height="50" rx="8" fill="#E8F5E9" stroke="#2D8C4E" stroke-width="1"/>
+  <text x="854" y="836" text-anchor="middle" font-size="10" font-weight="bold" fill="#2D8C4E">5. Stock Check</text>
+  <text x="854" y="852" text-anchor="middle" font-size="8" fill="#5A5A64">→ Catalog: validate stock</text>
+
+  <line x1="932" y1="840" x2="957" y2="840" stroke="#5A5A64" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Step 6: StockConfirmed -->
+  <rect x="960" y="815" width="155" height="50" rx="8" fill="#FFF3E0" stroke="#E88D2A" stroke-width="1"/>
+  <text x="1037" y="836" text-anchor="middle" font-size="10" font-weight="bold" fill="#E88D2A">6. StockConfirmed</text>
+  <text x="1037" y="852" text-anchor="middle" font-size="8" fill="#5A5A64">→ Ordering + Payment</text>
+
+  <line x1="1115" y1="840" x2="1140" y2="840" stroke="#5A5A64" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Step 7: Payment -->
+  <rect x="1143" y="815" width="155" height="50" rx="8" fill="#FCE4EC" stroke="#C04040" stroke-width="1"/>
+  <text x="1220" y="836" text-anchor="middle" font-size="10" font-weight="bold" fill="#C04040">7. Payment</text>
+  <text x="1220" y="852" text-anchor="middle" font-size="8" fill="#5A5A64">Succeed or Fail</text>
+
+  <!-- Row 2: Continuation -->
+  <line x1="1220" y1="865" x2="1220" y2="895" stroke="#5A5A64" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Step 8: PaymentResult -->
+  <rect x="1050" y="895" width="190" height="50" rx="8" fill="#FFF3E0" stroke="#E88D2A" stroke-width="1"/>
+  <text x="1145" y="916" text-anchor="middle" font-size="10" font-weight="bold" fill="#E88D2A">8. PaymentSucceeded</text>
+  <text x="1145" y="932" text-anchor="middle" font-size="8" fill="#5A5A64">→ Ordering: set Paid status</text>
+
+  <line x1="1050" y1="920" x2="1020" y2="920" stroke="#5A5A64" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Step 9: Paid → Catalog & Webhooks -->
+  <rect x="810" y="895" width="205" height="50" rx="8" fill="#E8F5E9" stroke="#2D8C4E" stroke-width="1"/>
+  <text x="912" y="916" text-anchor="middle" font-size="10" font-weight="bold" fill="#2D8C4E">9. OrderPaid</text>
+  <text x="912" y="932" text-anchor="middle" font-size="8" fill="#5A5A64">→ Catalog (update stock) + Webhooks</text>
+
+  <line x1="810" y1="920" x2="780" y2="920" stroke="#5A5A64" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Step 10: Shipped -->
+  <rect x="575" y="895" width="200" height="50" rx="8" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="1"/>
+  <text x="675" y="916" text-anchor="middle" font-size="10" font-weight="bold" fill="#7B1FA2">10. Shipped</text>
+  <text x="675" y="932" text-anchor="middle" font-size="8" fill="#5A5A64">→ WebApp + Webhooks notify</text>
+
+  <!-- Alt path: StockRejected -->
+  <rect x="45" y="895" width="220" height="50" rx="8" fill="#FFEBEE" stroke="#C04040" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="155" y="916" text-anchor="middle" font-size="10" font-weight="bold" fill="#C04040">Alt: StockRejected</text>
+  <text x="155" y="932" text-anchor="middle" font-size="8" fill="#5A5A64">→ Ordering: cancel order</text>
+
+  <!-- Alt path: PaymentFailed -->
+  <rect x="290" y="895" width="220" height="50" rx="8" fill="#FFEBEE" stroke="#C04040" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="400" y="916" text-anchor="middle" font-size="10" font-weight="bold" fill="#C04040">Alt: PaymentFailed</text>
+  <text x="400" y="932" text-anchor="middle" font-size="8" fill="#5A5A64">→ Ordering: cancel order</text>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- LEGEND                                          -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <rect x="20" y="965" width="1360" height="75" rx="12" fill="#FFFFFF" stroke="#E0E4EA" stroke-width="1" filter="url(#shadow)"/>
+  <text x="40" y="986" font-size="11" font-weight="bold" fill="#00A7E1" letter-spacing="1.5">LEGEND</text>
+
+  <!-- HTTP -->
+  <line x1="40" y1="1010" x2="80" y2="1010" stroke="#41007F" stroke-width="2"/>
+  <text x="90" y="1014" font-size="10" fill="#323232">HTTP / REST</text>
+
+  <!-- gRPC -->
+  <line x1="190" y1="1010" x2="230" y2="1010" stroke="#00A7E1" stroke-width="2" stroke-dasharray="6,3"/>
+  <text x="240" y="1014" font-size="10" fill="#323232">gRPC</text>
+
+  <!-- Event -->
+  <line x1="310" y1="1010" x2="350" y2="1010" stroke="#E88D2A" stroke-width="2"/>
+  <text x="360" y="1014" font-size="10" fill="#323232">Event Bus (pub/sub)</text>
+
+  <!-- Data -->
+  <line x1="500" y1="1010" x2="540" y2="1010" stroke="#2D8C4E" stroke-width="1.5"/>
+  <text x="550" y="1014" font-size="10" fill="#323232">Data Store</text>
+
+  <!-- Auth -->
+  <line x1="640" y1="1010" x2="680" y2="1010" stroke="#E88D2A" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+  <text x="690" y="1014" font-size="10" fill="#323232">Auth (OIDC)</text>
+
+  <!-- Proxy -->
+  <line x1="790" y1="1010" x2="830" y2="1010" stroke="#5A5A64" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="840" y="1014" font-size="10" fill="#323232">Proxy Route</text>
+
+  <!-- Service colors -->
+  <rect x="960" y="1000" width="14" height="14" rx="3" fill="#E8F5E9" stroke="#2D8C4E" stroke-width="1"/>
+  <text x="980" y="1012" font-size="10" fill="#323232">Catalog</text>
+
+  <rect x="1040" y="1000" width="14" height="14" rx="3" fill="#E1F5FE" stroke="#00A7E1" stroke-width="1"/>
+  <text x="1060" y="1012" font-size="10" fill="#323232">Basket</text>
+
+  <rect x="1120" y="1000" width="14" height="14" rx="3" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="1"/>
+  <text x="1140" y="1012" font-size="10" fill="#323232">Ordering</text>
+
+  <rect x="1210" y="1000" width="14" height="14" rx="3" fill="#FCE4EC" stroke="#C04040" stroke-width="1"/>
+  <text x="1230" y="1012" font-size="10" fill="#323232">Processors</text>
+
+  <rect x="1310" y="1000" width="14" height="14" rx="3" fill="#FFF8E1" stroke="#F9A825" stroke-width="1"/>
+  <text x="1330" y="1012" font-size="10" fill="#323232">Webhooks</text>
+
+</svg>

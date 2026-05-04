@@ -1,0 +1,450 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1560 1200" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8fafc" /><stop offset="100%" style="stop-color:#eef2f7" />
+    </linearGradient>
+    <filter id="sh" x="-3%" y="-3%" width="106%" height="110%">
+      <feDropShadow dx="1" dy="2" stdDeviation="3" flood-color="#0002"/>
+    </filter>
+    <filter id="shSm" x="-2%" y="-2%" width="104%" height="106%">
+      <feDropShadow dx="0.5" dy="1" stdDeviation="1.5" flood-color="#0001"/>
+    </filter>
+    <marker id="aGray" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5Z" fill="#6b7280"/></marker>
+    <marker id="aBlue" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5Z" fill="#0078d4"/></marker>
+    <marker id="aGreen" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5Z" fill="#2e7d32"/></marker>
+    <marker id="aOrange" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5Z" fill="#e65100"/></marker>
+    <marker id="aRed" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5Z" fill="#c62828"/></marker>
+    <marker id="aPurple" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5Z" fill="#5b21b6"/></marker>
+    <marker id="aTeal" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5Z" fill="#0e7490"/></marker>
+
+    <!-- Azure-style icons -->
+    <symbol id="ico-container" viewBox="0 0 40 40">
+      <rect x="2" y="6" width="36" height="28" rx="3" fill="#0078d4" opacity="0.12" stroke="#0078d4" stroke-width="1.5"/>
+      <rect x="6" y="11" width="12" height="8" rx="1.5" fill="#0078d4" opacity="0.7"/>
+      <rect x="22" y="11" width="12" height="8" rx="1.5" fill="#0078d4" opacity="0.5"/>
+      <rect x="6" y="22" width="12" height="8" rx="1.5" fill="#0078d4" opacity="0.5"/>
+      <rect x="22" y="22" width="12" height="8" rx="1.5" fill="#0078d4" opacity="0.3"/>
+    </symbol>
+    <symbol id="ico-postgres" viewBox="0 0 40 40">
+      <ellipse cx="20" cy="10" rx="15" ry="6" fill="#336791" opacity="0.2" stroke="#336791" stroke-width="1.5"/>
+      <path d="M5,10 v18 c0,3.3 6.7,6 15,6 s15-2.7 15-6 V10" fill="none" stroke="#336791" stroke-width="1.5"/>
+      <ellipse cx="20" cy="10" rx="15" ry="6" fill="none" stroke="#336791" stroke-width="1.5"/>
+      <path d="M5,19 c0,3.3 6.7,6 15,6 s15-2.7 15-6" fill="none" stroke="#336791" stroke-width="1" opacity="0.5"/>
+      <path d="M5,28 c0,3.3 6.7,6 15,6 s15-2.7 15-6" fill="none" stroke="#336791" stroke-width="1" opacity="0.5"/>
+    </symbol>
+    <symbol id="ico-redis" viewBox="0 0 40 40">
+      <path d="M20,4 L36,14 L20,24 L4,14 Z" fill="#d82c20" opacity="0.15" stroke="#d82c20" stroke-width="1.5"/>
+      <path d="M4,14 v10 L20,34 L36,24 V14" fill="none" stroke="#d82c20" stroke-width="1.5"/>
+      <path d="M20,24 v10" fill="none" stroke="#d82c20" stroke-width="1"/>
+      <circle cx="15" cy="13" r="2.5" fill="#d82c20" opacity="0.6"/>
+      <circle cx="24" cy="13" r="2.5" fill="#d82c20" opacity="0.6"/>
+    </symbol>
+    <symbol id="ico-rabbitmq" viewBox="0 0 40 40">
+      <rect x="4" y="14" width="32" height="20" rx="3" fill="#ff6600" opacity="0.12" stroke="#ff6600" stroke-width="1.5"/>
+      <rect x="9" y="7" width="9" height="14" rx="2" fill="#ff6600" opacity="0.5" stroke="#ff6600" stroke-width="1"/>
+      <rect x="22" y="7" width="9" height="14" rx="2" fill="#ff6600" opacity="0.5" stroke="#ff6600" stroke-width="1"/>
+      <circle cx="13.5" cy="28" r="3" fill="#ff6600" opacity="0.35"/>
+      <circle cx="26.5" cy="28" r="3" fill="#ff6600" opacity="0.35"/>
+    </symbol>
+    <symbol id="ico-identity" viewBox="0 0 40 40">
+      <path d="M20,3 L35,10 V22 C35,30 28,36 20,38 C12,36 5,30 5,22 V10 Z" fill="#5b21b6" opacity="0.12" stroke="#5b21b6" stroke-width="1.5"/>
+      <circle cx="20" cy="17" r="5" fill="#5b21b6" opacity="0.5"/>
+      <path d="M12,30 Q20,24 28,30" fill="none" stroke="#5b21b6" stroke-width="1.5" opacity="0.5"/>
+    </symbol>
+    <symbol id="ico-yarp" viewBox="0 0 40 40">
+      <rect x="3" y="8" width="34" height="24" rx="4" fill="#0e7490" opacity="0.12" stroke="#0e7490" stroke-width="1.5"/>
+      <path d="M10,16 L20,20 L10,24" fill="none" stroke="#0e7490" stroke-width="2" stroke-linecap="round"/>
+      <path d="M22,16 L32,20 L22,24" fill="none" stroke="#0e7490" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+    </symbol>
+    <symbol id="ico-webapp" viewBox="0 0 40 40">
+      <rect x="4" y="4" width="32" height="24" rx="3" fill="#0078d4" opacity="0.12" stroke="#0078d4" stroke-width="1.5"/>
+      <line x1="4" y1="11" x2="36" y2="11" stroke="#0078d4" stroke-width="1" opacity="0.4"/>
+      <circle cx="8" cy="7.5" r="1.5" fill="#0078d4" opacity="0.4"/>
+      <circle cx="13" cy="7.5" r="1.5" fill="#0078d4" opacity="0.4"/>
+      <circle cx="18" cy="7.5" r="1.5" fill="#0078d4" opacity="0.4"/>
+      <line x1="20" y1="28" x2="20" y2="34" stroke="#0078d4" stroke-width="1.5"/>
+      <line x1="12" y1="34" x2="28" y2="34" stroke="#0078d4" stroke-width="1.5" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="ico-worker" viewBox="0 0 40 40">
+      <circle cx="20" cy="20" r="14" fill="#7c3aed" opacity="0.1" stroke="#7c3aed" stroke-width="1.5"/>
+      <circle cx="20" cy="20" r="6" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
+      <g stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round">
+        <line x1="20" y1="4" x2="20" y2="9"/><line x1="20" y1="31" x2="20" y2="36"/>
+        <line x1="4" y1="20" x2="9" y2="20"/><line x1="31" y1="20" x2="36" y2="20"/>
+        <line x1="8.7" y1="8.7" x2="12.2" y2="12.2"/><line x1="27.8" y1="27.8" x2="31.3" y2="31.3"/>
+        <line x1="31.3" y1="8.7" x2="27.8" y2="12.2"/><line x1="12.2" y1="27.8" x2="8.7" y2="31.3"/>
+      </g>
+    </symbol>
+    <symbol id="ico-grpc" viewBox="0 0 40 40">
+      <rect x="4" y="8" width="32" height="24" rx="4" fill="#0e7490" opacity="0.12" stroke="#0e7490" stroke-width="1.5"/>
+      <text x="20" y="24" text-anchor="middle" font-size="11" font-weight="700" fill="#0e7490" font-family="Segoe UI, Arial, sans-serif">gRPC</text>
+    </symbol>
+    <symbol id="ico-telemetry" viewBox="0 0 40 40">
+      <rect x="3" y="6" width="34" height="28" rx="4" fill="#6a1b9a" opacity="0.1" stroke="#6a1b9a" stroke-width="1.5"/>
+      <polyline points="8,28 14,18 20,24 26,12 32,16" fill="none" stroke="#6a1b9a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="ico-user" viewBox="0 0 40 40">
+      <circle cx="20" cy="14" r="8" fill="#475569" opacity="0.15" stroke="#475569" stroke-width="1.5"/>
+      <path d="M6,36 Q6,26 20,26 Q34,26 34,36" fill="#475569" opacity="0.15" stroke="#475569" stroke-width="1.5"/>
+    </symbol>
+    <symbol id="ico-mobile" viewBox="0 0 40 40">
+      <rect x="10" y="3" width="20" height="34" rx="3" fill="#475569" opacity="0.1" stroke="#475569" stroke-width="1.5"/>
+      <line x1="10" y1="9" x2="30" y2="9" stroke="#475569" stroke-width="1" opacity="0.4"/>
+      <line x1="10" y1="31" x2="30" y2="31" stroke="#475569" stroke-width="1" opacity="0.4"/>
+      <circle cx="20" cy="34" r="1.5" fill="#475569" opacity="0.4"/>
+    </symbol>
+    <!-- WAF / App Gateway shield icon -->
+    <symbol id="ico-waf" viewBox="0 0 40 40">
+      <path d="M20,2 L37,10 V24 C37,32 29,38 20,40 C11,38 3,32 3,24 V10 Z" fill="#0078d4" opacity="0.1" stroke="#0078d4" stroke-width="1.5"/>
+      <path d="M20,10 L30,14 V22 C30,27 25,31 20,32 C15,31 10,27 10,22 V14 Z" fill="#0078d4" opacity="0.25"/>
+      <text x="20" y="25" text-anchor="middle" font-size="9" font-weight="700" fill="#0078d4" font-family="Segoe UI, Arial, sans-serif">WAF</text>
+    </symbol>
+    <!-- VNet icon -->
+    <symbol id="ico-vnet" viewBox="0 0 40 40">
+      <rect x="3" y="3" width="34" height="34" rx="5" fill="#0078d4" opacity="0.08" stroke="#0078d4" stroke-width="1.5" stroke-dasharray="4 2"/>
+      <circle cx="12" cy="14" r="4" fill="#0078d4" opacity="0.3"/>
+      <circle cx="28" cy="14" r="4" fill="#0078d4" opacity="0.3"/>
+      <circle cx="12" cy="28" r="4" fill="#0078d4" opacity="0.3"/>
+      <circle cx="28" cy="28" r="4" fill="#0078d4" opacity="0.3"/>
+      <line x1="12" y1="14" x2="28" y2="14" stroke="#0078d4" stroke-width="1" opacity="0.4"/>
+      <line x1="12" y1="14" x2="12" y2="28" stroke="#0078d4" stroke-width="1" opacity="0.4"/>
+      <line x1="28" y1="14" x2="28" y2="28" stroke="#0078d4" stroke-width="1" opacity="0.4"/>
+      <line x1="12" y1="28" x2="28" y2="28" stroke="#0078d4" stroke-width="1" opacity="0.4"/>
+    </symbol>
+    <!-- ACR icon -->
+    <symbol id="ico-acr" viewBox="0 0 40 40">
+      <rect x="4" y="8" width="32" height="24" rx="4" fill="#0078d4" opacity="0.1" stroke="#0078d4" stroke-width="1.5"/>
+      <rect x="10" y="14" width="8" height="12" rx="1" fill="#0078d4" opacity="0.4"/>
+      <rect x="22" y="14" width="8" height="12" rx="1" fill="#0078d4" opacity="0.25"/>
+      <path d="M14,14 L14,11 L26,11 L26,14" fill="none" stroke="#0078d4" stroke-width="1.2"/>
+    </symbol>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1560" height="1200" fill="url(#bgGrad)"/>
+
+  <!-- Title -->
+  <text x="780" y="36" text-anchor="middle" font-size="22" font-weight="700" fill="#1e293b">eShop — Azure Deployment Architecture</text>
+  <text x="780" y="56" text-anchor="middle" font-size="12" fill="#64748b">Application Gateway (WAF v2)  +  VNet-Integrated Container Apps  +  Managed Data Services</text>
+
+  <!-- ============================================================ -->
+  <!--  EXTERNAL CLIENTS                                             -->
+  <!-- ============================================================ -->
+  <g transform="translate(300,105)">
+    <use href="#ico-user" x="-15" y="-18" width="30" height="30"/>
+    <text x="0" y="22" text-anchor="middle" font-size="11" font-weight="600" fill="#334155">Browser Users</text>
+  </g>
+  <g transform="translate(560,105)">
+    <use href="#ico-mobile" x="-15" y="-18" width="30" height="30"/>
+    <text x="0" y="22" text-anchor="middle" font-size="11" font-weight="600" fill="#334155">Mobile Clients</text>
+  </g>
+
+  <!-- ============================================================ -->
+  <!--  AZURE SUBSCRIPTION BOUNDARY                                  -->
+  <!-- ============================================================ -->
+  <rect x="30" y="150" width="1500" height="1010" rx="14" fill="none" stroke="#0078d4" stroke-width="2" opacity="0.3"/>
+  <rect x="42" y="150" width="180" height="24" rx="5" fill="#0078d4"/>
+  <text x="132" y="166" text-anchor="middle" font-size="11" fill="#fff" font-weight="600">Azure Subscription</text>
+
+  <!-- ============================================================ -->
+  <!--  VNET BOUNDARY (10.0.0.0/16)                                  -->
+  <!-- ============================================================ -->
+  <rect x="55" y="195" width="910" height="875" rx="12" fill="#e0f2fe" fill-opacity="0.2" stroke="#0078d4" stroke-width="1.8" stroke-dasharray="8 4"/>
+  <g transform="translate(67,195)">
+    <rect x="0" y="0" width="280" height="24" rx="5" fill="#0078d4" opacity="0.8"/>
+    <use href="#ico-vnet" x="4" y="1" width="22" height="22"/>
+    <text x="142" y="16" text-anchor="middle" font-size="10.5" fill="#fff" font-weight="600">VNet: vnet-eshop (10.0.0.0/16)</text>
+  </g>
+
+  <!-- ============================================================ -->
+  <!--  SUBNET 1: Application Gateway (10.0.0.0/24)                  -->
+  <!-- ============================================================ -->
+  <rect x="80" y="240" width="860" height="110" rx="10" fill="#dbeafe" fill-opacity="0.3" stroke="#3b82f6" stroke-width="1.2" stroke-dasharray="5 3"/>
+  <text x="95" y="258" font-size="9.5" fill="#3b82f6" font-weight="600">snet-appgateway (10.0.0.0/24)</text>
+
+  <!-- Application Gateway -->
+  <g transform="translate(430,295)">
+    <rect x="-310" y="-32" width="620" height="64" rx="12" fill="#fff" stroke="#0078d4" stroke-width="2" filter="url(#sh)"/>
+    <use href="#ico-waf" x="-300" y="-26" width="44" height="44"/>
+    <text x="-30" y="-8" text-anchor="middle" font-size="15" font-weight="700" fill="#0078d4">Azure Application Gateway</text>
+    <text x="-30" y="10" text-anchor="middle" font-size="10" fill="#3b82f6">WAF v2  •  OWASP 3.2 Prevention  •  SSL Termination  •  HTTP→HTTPS Redirect</text>
+    <text x="-30" y="24" text-anchor="middle" font-size="9" fill="#94a3b8">Host-based routing: webapp / identity-api / webhooksclient / mobile-bff</text>
+
+    <!-- Public IP badge -->
+    <rect x="220" y="-26" width="82" height="44" rx="6" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
+    <text x="261" y="-8" text-anchor="middle" font-size="8.5" font-weight="600" fill="#3b82f6">Public IP</text>
+    <text x="261" y="5" text-anchor="middle" font-size="8" fill="#64748b">Static</text>
+    <text x="261" y="15" text-anchor="middle" font-size="7" fill="#94a3b8">Standard SKU</text>
+  </g>
+
+  <!-- Arrows: Users → App Gateway -->
+  <line x1="300" y1="130" x2="350" y2="260" stroke="#0078d4" stroke-width="2" marker-end="url(#aBlue)"/>
+  <line x1="560" y1="130" x2="510" y2="260" stroke="#0078d4" stroke-width="2" marker-end="url(#aBlue)"/>
+  <text x="310" y="195" font-size="8" fill="#0078d4" font-weight="600">HTTPS</text>
+  <text x="545" y="195" font-size="8" fill="#0078d4" font-weight="600">HTTPS</text>
+
+  <!-- ============================================================ -->
+  <!--  SUBNET 2: Container Apps Environment (10.0.8.0/21, internal) -->
+  <!-- ============================================================ -->
+  <rect x="80" y="370" width="860" height="680" rx="10" fill="#ecfdf5" fill-opacity="0.2" stroke="#059669" stroke-width="1.2" stroke-dasharray="5 3"/>
+  <text x="95" y="388" font-size="9.5" fill="#059669" font-weight="600">snet-containerapps (10.0.8.0/21) — Container Apps Environment (internal: true)</text>
+
+  <!-- ── Row 1: External-routed Container Apps ── -->
+
+  <!-- WebApp BFF -->
+  <g transform="translate(200,450)">
+    <rect x="-95" y="-42" width="190" height="84" rx="10" fill="#fff" stroke="#0078d4" stroke-width="1.4" filter="url(#sh)"/>
+    <use href="#ico-webapp" x="-16" y="-38" width="32" height="32"/>
+    <text x="0" y="8" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0078d4">WebApp</text>
+    <text x="0" y="22" text-anchor="middle" font-size="9.5" fill="#64748b">Blazor Server — BFF</text>
+    <text x="0" y="34" text-anchor="middle" font-size="8.5" fill="#94a3b8">ingress: external (via AGW)</text>
+  </g>
+
+  <!-- Mobile BFF (YARP) -->
+  <g transform="translate(440,450)">
+    <rect x="-95" y="-42" width="190" height="84" rx="10" fill="#fff" stroke="#0e7490" stroke-width="1.4" filter="url(#sh)"/>
+    <use href="#ico-yarp" x="-16" y="-38" width="32" height="32"/>
+    <text x="0" y="8" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0e7490">Mobile BFF</text>
+    <text x="0" y="22" text-anchor="middle" font-size="9.5" fill="#64748b">YARP Reverse Proxy</text>
+    <text x="0" y="34" text-anchor="middle" font-size="8.5" fill="#94a3b8">ingress: external (via AGW)</text>
+  </g>
+
+  <!-- Identity API -->
+  <g transform="translate(680,450)">
+    <rect x="-95" y="-42" width="190" height="84" rx="10" fill="#fff" stroke="#5b21b6" stroke-width="1.4" filter="url(#sh)"/>
+    <use href="#ico-identity" x="-16" y="-38" width="32" height="32"/>
+    <text x="0" y="8" text-anchor="middle" font-size="12.5" font-weight="700" fill="#5b21b6">Identity API</text>
+    <text x="0" y="22" text-anchor="middle" font-size="9.5" fill="#64748b">Duende IdentityServer</text>
+    <text x="0" y="34" text-anchor="middle" font-size="8.5" fill="#94a3b8">ingress: external (via AGW)</text>
+  </g>
+
+  <!-- Webhook Client -->
+  <g transform="translate(870,450)">
+    <rect x="-60" y="-42" width="120" height="84" rx="10" fill="#fff" stroke="#7c3aed" stroke-width="1.4" filter="url(#sh)"/>
+    <use href="#ico-webapp" x="-16" y="-38" width="32" height="32"/>
+    <text x="0" y="8" text-anchor="middle" font-size="10.5" font-weight="700" fill="#7c3aed">Webhook</text>
+    <text x="0" y="20" text-anchor="middle" font-size="10.5" font-weight="700" fill="#7c3aed">Client</text>
+    <text x="0" y="34" text-anchor="middle" font-size="8" fill="#94a3b8">via AGW</text>
+  </g>
+
+  <!-- Arrows: App Gateway → Container Apps (internal HTTPS to static IP) -->
+  <line x1="230" y1="330" x2="200" y2="405" stroke="#0078d4" stroke-width="1.5" marker-end="url(#aBlue)"/>
+  <line x1="380" y1="330" x2="420" y2="405" stroke="#0078d4" stroke-width="1.5" marker-end="url(#aBlue)"/>
+  <line x1="530" y1="330" x2="650" y2="405" stroke="#0078d4" stroke-width="1.5" marker-end="url(#aBlue)"/>
+  <line x1="600" y1="330" x2="855" y2="405" stroke="#0078d4" stroke-width="1.3" marker-end="url(#aBlue)"/>
+  <text x="460" y="368" text-anchor="middle" font-size="8" fill="#0078d4">HTTPS to CAE static IP (host-based SNI routing)</text>
+
+  <!-- ── Row 2: Internal APIs ── -->
+
+  <!-- Catalog API -->
+  <g transform="translate(140,600)">
+    <rect x="-90" y="-40" width="180" height="80" rx="10" fill="#fff" stroke="#0e7490" stroke-width="1.4" filter="url(#sh)"/>
+    <use href="#ico-container" x="-16" y="-36" width="32" height="32"/>
+    <text x="0" y="6" text-anchor="middle" font-size="12" font-weight="700" fill="#0e7490">Catalog API</text>
+    <text x="0" y="20" text-anchor="middle" font-size="9" fill="#64748b">REST  •  pgvector search</text>
+    <text x="0" y="32" text-anchor="middle" font-size="8.5" fill="#94a3b8">ingress: internal</text>
+  </g>
+
+  <!-- Basket API -->
+  <g transform="translate(360,600)">
+    <rect x="-90" y="-40" width="180" height="80" rx="10" fill="#fff" stroke="#0e7490" stroke-width="1.4" filter="url(#sh)"/>
+    <use href="#ico-grpc" x="-16" y="-36" width="32" height="32"/>
+    <text x="0" y="6" text-anchor="middle" font-size="12" font-weight="700" fill="#0e7490">Basket API</text>
+    <text x="0" y="20" text-anchor="middle" font-size="9" fill="#64748b">gRPC (HTTP/2)  •  Redis</text>
+    <text x="0" y="32" text-anchor="middle" font-size="8.5" fill="#94a3b8">ingress: internal</text>
+  </g>
+
+  <!-- Ordering API -->
+  <g transform="translate(580,600)">
+    <rect x="-90" y="-40" width="180" height="80" rx="10" fill="#fff" stroke="#0e7490" stroke-width="1.4" filter="url(#sh)"/>
+    <use href="#ico-container" x="-16" y="-36" width="32" height="32"/>
+    <text x="0" y="6" text-anchor="middle" font-size="12" font-weight="700" fill="#0e7490">Ordering API</text>
+    <text x="0" y="20" text-anchor="middle" font-size="9" fill="#64748b">REST  •  MediatR/CQRS</text>
+    <text x="0" y="32" text-anchor="middle" font-size="8.5" fill="#94a3b8">ingress: internal</text>
+  </g>
+
+  <!-- Webhooks API -->
+  <g transform="translate(800,600)">
+    <rect x="-90" y="-40" width="180" height="80" rx="10" fill="#fff" stroke="#0e7490" stroke-width="1.4" filter="url(#sh)"/>
+    <use href="#ico-container" x="-16" y="-36" width="32" height="32"/>
+    <text x="0" y="6" text-anchor="middle" font-size="12" font-weight="700" fill="#0e7490">Webhooks API</text>
+    <text x="0" y="20" text-anchor="middle" font-size="9" fill="#64748b">REST  •  Subscriptions</text>
+    <text x="0" y="32" text-anchor="middle" font-size="8.5" fill="#94a3b8">ingress: internal</text>
+  </g>
+
+  <!-- Arrows: WebApp → internal APIs -->
+  <line x1="155" y1="495" x2="145" y2="557" stroke="#6b7280" stroke-width="1.2" marker-end="url(#aGray)"/>
+  <line x1="225" y1="495" x2="340" y2="557" stroke="#6b7280" stroke-width="1.2" marker-end="url(#aGray)"/>
+  <line x1="260" y1="495" x2="555" y2="557" stroke="#6b7280" stroke-width="1.2" marker-end="url(#aGray)"/>
+
+  <!-- Arrows: Mobile BFF → internal APIs (YARP routes) -->
+  <line x1="390" y1="495" x2="160" y2="557" stroke="#0e7490" stroke-width="1" marker-end="url(#aTeal)" stroke-dasharray="4 2"/>
+  <line x1="470" y1="495" x2="560" y2="557" stroke="#0e7490" stroke-width="1" marker-end="url(#aTeal)" stroke-dasharray="4 2"/>
+
+  <!-- Identity JWT arrows -->
+  <line x1="295" y1="450" x2="583" y2="450" stroke="#5b21b6" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#aPurple)" opacity="0.35"/>
+  <text x="440" y="443" text-anchor="middle" font-size="7.5" fill="#5b21b6" opacity="0.5">JWT validation</text>
+
+  <!-- Webhook Client → Webhooks API -->
+  <line x1="850" y1="495" x2="820" y2="557" stroke="#6b7280" stroke-width="1" marker-end="url(#aGray)"/>
+
+  <!-- ── Row 3: Background Workers ── -->
+
+  <!-- Order Processor -->
+  <g transform="translate(220,760)">
+    <rect x="-90" y="-36" width="180" height="72" rx="10" fill="#fff" stroke="#7c3aed" stroke-width="1.4" filter="url(#sh)"/>
+    <use href="#ico-worker" x="-16" y="-32" width="32" height="32"/>
+    <text x="0" y="6" text-anchor="middle" font-size="12" font-weight="700" fill="#7c3aed">Order Processor</text>
+    <text x="0" y="20" text-anchor="middle" font-size="9" fill="#64748b">Background Worker</text>
+    <text x="0" y="32" text-anchor="middle" font-size="8.5" fill="#94a3b8">no ingress</text>
+  </g>
+
+  <!-- Payment Processor -->
+  <g transform="translate(500,760)">
+    <rect x="-90" y="-36" width="180" height="72" rx="10" fill="#fff" stroke="#7c3aed" stroke-width="1.4" filter="url(#sh)"/>
+    <use href="#ico-worker" x="-16" y="-32" width="32" height="32"/>
+    <text x="0" y="6" text-anchor="middle" font-size="12" font-weight="700" fill="#7c3aed">Payment Processor</text>
+    <text x="0" y="20" text-anchor="middle" font-size="9" fill="#64748b">Background Worker</text>
+    <text x="0" y="32" text-anchor="middle" font-size="8.5" fill="#94a3b8">no ingress</text>
+  </g>
+
+  <!-- ── Row 4: RabbitMQ ── -->
+
+  <g transform="translate(420,910)">
+    <rect x="-200" y="-36" width="400" height="72" rx="12" fill="#fff8e1" stroke="#ff6600" stroke-width="1.5" filter="url(#sh)"/>
+    <use href="#ico-rabbitmq" x="-190" y="-30" width="38" height="38"/>
+    <text x="0" y="-8" text-anchor="middle" font-size="14" font-weight="700" fill="#e65100">RabbitMQ</text>
+    <text x="0" y="8" text-anchor="middle" font-size="10" fill="#bf360c">Event Bus — Integration Events (TCP ingress, internal)</text>
+    <text x="0" y="24" text-anchor="middle" font-size="9" fill="#94a3b8">Container App  •  Persistent Lifetime  •  amqp://rabbitmq:5672</text>
+  </g>
+
+  <!-- Arrows: Services → RabbitMQ -->
+  <line x1="140" y1="643" x2="270" y2="872" stroke="#e65100" stroke-width="1" marker-end="url(#aOrange)" opacity="0.45"/>
+  <line x1="360" y1="643" x2="360" y2="872" stroke="#e65100" stroke-width="1" marker-end="url(#aOrange)" opacity="0.45"/>
+  <line x1="580" y1="643" x2="470" y2="872" stroke="#e65100" stroke-width="1" marker-end="url(#aOrange)" opacity="0.45"/>
+  <line x1="800" y1="643" x2="550" y2="872" stroke="#e65100" stroke-width="1" marker-end="url(#aOrange)" opacity="0.45"/>
+  <line x1="200" y1="495" x2="280" y2="872" stroke="#e65100" stroke-width="0.8" marker-end="url(#aOrange)" opacity="0.3"/>
+  <line x1="220" y1="796" x2="290" y2="872" stroke="#e65100" stroke-width="1" marker-end="url(#aOrange)" opacity="0.45"/>
+  <line x1="500" y1="796" x2="450" y2="872" stroke="#e65100" stroke-width="1" marker-end="url(#aOrange)" opacity="0.45"/>
+
+  <!-- ============================================================ -->
+  <!--  MANAGED DATA SERVICES (right panel, outside VNet)            -->
+  <!-- ============================================================ -->
+  <rect x="990" y="195" width="520" height="680" rx="12" fill="#fefce8" fill-opacity="0.25" stroke="#ca8a04" stroke-width="1.3" stroke-dasharray="7 4"/>
+  <rect x="1002" y="195" width="220" height="24" rx="5" fill="#ca8a04"/>
+  <text x="1112" y="211" text-anchor="middle" font-size="11" fill="#fff" font-weight="600">Azure Managed Data Services</text>
+
+  <!-- Azure Database for PostgreSQL -->
+  <g transform="translate(1250,310)">
+    <rect x="-230" y="-55" width="460" height="175" rx="10" fill="#fff" stroke="#336791" stroke-width="1.5" filter="url(#sh)"/>
+    <use href="#ico-postgres" x="-220" y="-50" width="38" height="38"/>
+    <text x="0" y="-28" text-anchor="middle" font-size="14" font-weight="700" fill="#336791">Azure Database for PostgreSQL</text>
+    <text x="0" y="-12" text-anchor="middle" font-size="10" fill="#64748b">Flexible Server  •  Burstable B2ms  •  pgvector extension</text>
+
+    <g transform="translate(-150,12)">
+      <rect x="0" y="0" width="130" height="40" rx="6" fill="#e0f2fe" stroke="#336791" stroke-width="1" filter="url(#shSm)"/>
+      <text x="65" y="16" text-anchor="middle" font-size="10" font-weight="600" fill="#336791">catalogdb</text>
+      <text x="65" y="30" text-anchor="middle" font-size="8" fill="#64748b">Catalog API</text>
+    </g>
+    <g transform="translate(20,12)">
+      <rect x="0" y="0" width="130" height="40" rx="6" fill="#ede9fe" stroke="#336791" stroke-width="1" filter="url(#shSm)"/>
+      <text x="65" y="16" text-anchor="middle" font-size="10" font-weight="600" fill="#336791">identitydb</text>
+      <text x="65" y="30" text-anchor="middle" font-size="8" fill="#64748b">Identity API</text>
+    </g>
+    <g transform="translate(-150,62)">
+      <rect x="0" y="0" width="130" height="40" rx="6" fill="#e0f2fe" stroke="#336791" stroke-width="1" filter="url(#shSm)"/>
+      <text x="65" y="16" text-anchor="middle" font-size="10" font-weight="600" fill="#336791">orderingdb</text>
+      <text x="65" y="30" text-anchor="middle" font-size="8" fill="#64748b">Ordering + Order Proc.</text>
+    </g>
+    <g transform="translate(20,62)">
+      <rect x="0" y="0" width="130" height="40" rx="6" fill="#e0f2fe" stroke="#336791" stroke-width="1" filter="url(#shSm)"/>
+      <text x="65" y="16" text-anchor="middle" font-size="10" font-weight="600" fill="#336791">webhooksdb</text>
+      <text x="65" y="30" text-anchor="middle" font-size="8" fill="#64748b">Webhooks API</text>
+    </g>
+  </g>
+
+  <!-- Azure Cache for Redis -->
+  <g transform="translate(1250,555)">
+    <rect x="-230" y="-38" width="460" height="76" rx="10" fill="#fff" stroke="#d82c20" stroke-width="1.5" filter="url(#sh)"/>
+    <use href="#ico-redis" x="-220" y="-32" width="38" height="38"/>
+    <text x="0" y="-8" text-anchor="middle" font-size="14" font-weight="700" fill="#d82c20">Azure Cache for Redis</text>
+    <text x="0" y="10" text-anchor="middle" font-size="10.5" fill="#64748b">Basket Session Store  •  TLS 1.2  •  Basic C0</text>
+    <text x="0" y="26" text-anchor="middle" font-size="9" fill="#94a3b8">SSL-only, no non-SSL port</text>
+  </g>
+
+  <!-- Azure Container Registry -->
+  <g transform="translate(1250,680)">
+    <rect x="-230" y="-35" width="460" height="65" rx="10" fill="#fff" stroke="#0078d4" stroke-width="1.3" filter="url(#sh)"/>
+    <use href="#ico-acr" x="-220" y="-28" width="34" height="34"/>
+    <text x="0" y="-8" text-anchor="middle" font-size="13" font-weight="700" fill="#0078d4">Azure Container Registry</text>
+    <text x="0" y="10" text-anchor="middle" font-size="10" fill="#64748b">Basic SKU  •  Managed Identity pull (AcrPull)</text>
+    <text x="0" y="24" text-anchor="middle" font-size="9" fill="#94a3b8">All Container Apps pull images via User-Assigned MI</text>
+  </g>
+
+  <!-- Log Analytics -->
+  <g transform="translate(1250,790)">
+    <rect x="-230" y="-35" width="460" height="65" rx="10" fill="#fff" stroke="#6a1b9a" stroke-width="1.3" filter="url(#sh)"/>
+    <use href="#ico-telemetry" x="-220" y="-28" width="34" height="34"/>
+    <text x="0" y="-8" text-anchor="middle" font-size="13" font-weight="700" fill="#6a1b9a">Log Analytics Workspace</text>
+    <text x="0" y="10" text-anchor="middle" font-size="10" fill="#64748b">OpenTelemetry (OTLP)  •  Traces / Metrics / Logs</text>
+    <text x="0" y="24" text-anchor="middle" font-size="9" fill="#94a3b8">Container Apps Environment logs destination</text>
+  </g>
+
+  <!-- Data connection arrows -->
+  <!-- Catalog API → catalogdb -->
+  <line x1="230" y1="600" x2="1018" y2="310" stroke="#336791" stroke-width="1.2" marker-end="url(#aGray)" opacity="0.4"/>
+  <!-- Identity API → identitydb -->
+  <line x1="775" y1="455" x2="1018" y2="330" stroke="#336791" stroke-width="1.2" marker-end="url(#aGray)" opacity="0.4"/>
+  <!-- Ordering API → orderingdb -->
+  <line x1="670" y1="600" x2="1018" y2="360" stroke="#336791" stroke-width="1.2" marker-end="url(#aGray)" opacity="0.4"/>
+  <!-- Webhooks API → webhooksdb -->
+  <line x1="890" y1="610" x2="1018" y2="380" stroke="#336791" stroke-width="1.2" marker-end="url(#aGray)" opacity="0.4"/>
+  <!-- Order Processor → orderingdb -->
+  <line x1="310" y1="755" x2="1018" y2="370" stroke="#336791" stroke-width="1" marker-end="url(#aGray)" opacity="0.25" stroke-dasharray="4 3"/>
+  <!-- Basket API → Redis -->
+  <line x1="450" y1="610" x2="1018" y2="550" stroke="#d82c20" stroke-width="1.2" marker-end="url(#aRed)" opacity="0.4"/>
+
+  <!-- ============================================================ -->
+  <!--  TRAFFIC FLOW CALLOUT                                         -->
+  <!-- ============================================================ -->
+  <g transform="translate(1250,930)">
+    <rect x="-230" y="-35" width="460" height="115" rx="10" fill="#fff" stroke="#0078d4" stroke-width="1.2" filter="url(#shSm)"/>
+    <text x="0" y="-14" text-anchor="middle" font-size="12" font-weight="700" fill="#0078d4">Traffic Flow</text>
+    <text x="-210" y="6" font-size="9.5" fill="#334155">1. Client sends HTTPS request to App Gateway public IP</text>
+    <text x="-210" y="22" font-size="9.5" fill="#334155">2. WAF inspects request (OWASP 3.2 rules)</text>
+    <text x="-210" y="38" font-size="9.5" fill="#334155">3. App Gateway routes via host header to CAE static IP</text>
+    <text x="-210" y="54" font-size="9.5" fill="#334155">4. CAE internal LB forwards to correct Container App</text>
+    <text x="-210" y="70" font-size="9.5" fill="#334155">5. Internal services communicate over VNet (no public exposure)</text>
+  </g>
+
+  <!-- ============================================================ -->
+  <!--  LEGEND                                                       -->
+  <!-- ============================================================ -->
+  <g transform="translate(40,1080)">
+    <rect x="0" y="0" width="1490" height="70" rx="8" fill="#fff" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="18" y="18" font-size="10" fill="#334155" font-weight="700">LEGEND</text>
+
+    <line x1="18" y1="38" x2="48" y2="38" stroke="#0078d4" stroke-width="2" marker-end="url(#aBlue)"/>
+    <text x="54" y="42" font-size="9" fill="#475569">External HTTPS (via App Gateway)</text>
+
+    <line x1="230" y1="38" x2="260" y2="38" stroke="#6b7280" stroke-width="1.5" marker-end="url(#aGray)"/>
+    <text x="266" y="42" font-size="9" fill="#475569">Internal HTTP / gRPC</text>
+
+    <line x1="400" y1="38" x2="430" y2="38" stroke="#0e7490" stroke-width="1.2" marker-end="url(#aTeal)" stroke-dasharray="4 2"/>
+    <text x="436" y="42" font-size="9" fill="#475569">YARP proxy route</text>
+
+    <line x1="550" y1="38" x2="580" y2="38" stroke="#e65100" stroke-width="1.5" marker-end="url(#aOrange)"/>
+    <text x="586" y="42" font-size="9" fill="#475569">RabbitMQ pub/sub</text>
+
+    <line x1="710" y1="38" x2="740" y2="38" stroke="#336791" stroke-width="1.5" marker-end="url(#aGray)" opacity="0.5"/>
+    <text x="746" y="42" font-size="9" fill="#475569">PostgreSQL connection</text>
+
+    <line x1="880" y1="38" x2="910" y2="38" stroke="#d82c20" stroke-width="1.5" marker-end="url(#aRed)"/>
+    <text x="916" y="42" font-size="9" fill="#475569">Redis connection</text>
+
+    <line x1="1020" y1="38" x2="1050" y2="38" stroke="#5b21b6" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#aPurple)"/>
+    <text x="1056" y="42" font-size="9" fill="#475569">JWT / Identity</text>
+
+    <text x="18" y="58" font-size="8.5" fill="#94a3b8">Sources: infra/main.bicep, infra/infra.bicep, infra/apps.bicep, infra/modules/*.bicep  •  All connections derived from Bicep resource definitions</text>
+  </g>
+</svg>
