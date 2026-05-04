@@ -88,7 +88,7 @@ resource identityApi 'Microsoft.App/containerApps@2024-03-01' = {
     configuration: {
       activeRevisionsMode: 'Single'
       registries: [{ server: acrLoginServer, identity: managedIdentityId }]
-      ingress: { external: true, targetPort: dotnetPort, transport: 'auto' }
+      ingress: { external: true, targetPort: dotnetPort, transport: 'auto', allowInsecure: true }
       secrets: [
         { name: 'identity-db', value: identityDbConn }
       ]
@@ -363,7 +363,7 @@ resource webhookClient 'Microsoft.App/containerApps@2024-03-01' = {
     configuration: {
       activeRevisionsMode: 'Single'
       registries: [{ server: acrLoginServer, identity: managedIdentityId }]
-      ingress: { external: true, targetPort: dotnetPort, transport: 'auto' }
+      ingress: { external: true, targetPort: dotnetPort, transport: 'auto', allowInsecure: true }
     }
     template: {
       containers: [
@@ -399,7 +399,7 @@ resource webApp 'Microsoft.App/containerApps@2024-03-01' = {
     configuration: {
       activeRevisionsMode: 'Single'
       registries: [{ server: acrLoginServer, identity: managedIdentityId }]
-      ingress: { external: true, targetPort: dotnetPort, transport: 'auto' }
+      ingress: { external: true, targetPort: dotnetPort, transport: 'auto', allowInsecure: true }
       secrets: [
         { name: 'eventbus', value: eventbusConn }
       ]
