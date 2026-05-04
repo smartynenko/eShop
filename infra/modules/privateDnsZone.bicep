@@ -11,7 +11,7 @@ resource wildcardRecord 'Microsoft.Network/privateDnsZones/A@2024-06-01' = {
   parent: privateDnsZone
   name: '*'
   properties: {
-    ttlInSeconds: 300
+    ttl: 300
     aRecords: [
       { ipv4Address: containerAppsStaticIp }
     ]
@@ -22,7 +22,7 @@ resource apexRecord 'Microsoft.Network/privateDnsZones/A@2024-06-01' = {
   parent: privateDnsZone
   name: '@'
   properties: {
-    ttlInSeconds: 300
+    ttl: 300
     aRecords: [
       { ipv4Address: containerAppsStaticIp }
     ]
