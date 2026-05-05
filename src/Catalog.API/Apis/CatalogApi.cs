@@ -53,6 +53,11 @@ public static class CatalogApi
             .WithSummary("Get catalog item count")
             .WithDescription("Get the total number of items in the catalog")
             .WithTags("Items");
+        api.MapGet("/items/{id:int}/frequently-bought-together", GetFrequentlyBoughtTogether)
+            .WithName("GetFrequentlyBoughtTogether")
+            .WithSummary("Get frequently bought together items")
+            .WithDescription("Get catalog items commonly purchased alongside the specified item")
+            .WithTags("Items");
 
         // Routes for resolving catalog items using AI.
         v1.MapGet("/items/withsemanticrelevance/{text:minlength(1)}", GetItemsBySemanticRelevanceV1)
@@ -232,6 +237,47 @@ public static class CatalogApi
     public static async Task<Ok<long>> GetItemCount([AsParameters] CatalogServices services)
     {
         return TypedResults.Ok(await services.Context.CatalogItems.LongCountAsync());
+    }
+
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    public static async Task<Results<Ok<FrequentlyBoughtTogetherResponse>, NotFound, BadRequest<ProblemDetails>>> GetFrequentlyBoughtTogether(
+        [AsParameters] CatalogServices services,
+        [Description("The catalog item id")] int id,
+        [Description("Maximum number of related items to return")] [DefaultValue(5)] int maxItems = 5)
+    {
+        if (id <= 0)
+        {
+            return TypedResults.BadRequest<ProblemDetails>(new()
+            {
+                Detail = "Id is not valid"
+            });
+        }
+
+        if (maxItems is < 1 or > 20)
+        {
+            return TypedResults.BadRequest<ProblemDetails>(new()
+            {
+                Detail = "maxItems must be between 1 and 20"
+            });
+        }
+
+        var itemExists = await services.Context.CatalogItems.AnyAsync(ci => ci.Id == id);
+        if (!itemExists)
+        {
+            return TypedResults.NotFound();
+        }
+
+        var relatedItems = await services.Context.CatalogItemAssociations
+            .Where(a => a.CatalogItemId == id)
+            .OrderByDescending(a => a.OrderCount)
+            .Take(maxItems)
+            .Join(services.Context.CatalogItems,
+                a => a.RelatedCatalogItemId,
+                ci => ci.Id,
+                (a, ci) => ci)
+            .ToListAsync();
+
+        return TypedResults.Ok(new FrequentlyBoughtTogetherResponse(id, relatedItems));
     }
 
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
