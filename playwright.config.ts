@@ -85,7 +85,9 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'dotnet run --project src/eShop.AppHost/eShop.AppHost.csproj',
+    command: process.env.CI
+      ? 'dotnet run --project src/eShop.AppHost/eShop.AppHost.csproj --launch-profile http'
+      : 'dotnet run --project src/eShop.AppHost/eShop.AppHost.csproj',
     url: 'http://localhost:5045/health',
     reuseExistingServer: !process.env.CI,
     stderr: 'pipe',
